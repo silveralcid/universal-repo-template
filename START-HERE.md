@@ -32,7 +32,7 @@ Read [startup](docs/agents/startup.md), then only the relevant owners. The proje
 2. Turn the user's task into a concise brief and the smallest testable outcome. Resolve low-risk implementation details yourself; escalate only material, irreversible ambiguity.
 3. Inspect tool availability. Optional: `python tools/repo.py doctor`, then `python tools/repo.py context --topic bootstrap`.
 4. In an existing project, reuse its architecture and commands. In an empty one, add only the stack needed for the requested outcome. Do not rewrite existing agent configuration wholesale.
-5. Record actual setup/check commands in `.repo/project.json`, and scope modules in `.repo/areas.json` when helpful. Read [command registration](docs/agents/commands.md).
+5. Record actual setup/check commands in `.repo/project.json`. When a *real, separately owned module* appears, use `python tools/repo.py area new --id <slug> --path <glob> [--check test]` rather than inventing areas beforehand. See [area scaffolding](docs/areas/README.md).
 6. Build the slice, connect its real entrypoint, run targeted checks, and explain how the human can reproduce it. Follow [definition of done](docs/agents/definition-of-done.md).
 
 ## Optional manual preparation
@@ -50,3 +50,5 @@ Use the actual integration branch, not automatically `main`. `init` changes meta
 ## The first handoff must contain
 
 A runnable first outcome or a precise blocker; entrypoint/startup commands; configured checks and their real results; outstanding product decisions; source/working-tree identity; and the next useful task. A docs-only green check is not proof that the new application works.
+
+For repeat tasks, use exactly **one** appropriate template from [agent prompts](docs/prompts/README.md) (`python tools/repo.py prompt show implement`), not the entire prompt library. The [cost policy](docs/agents/operating-cost.md) discourages duplicate discovery, needless subagents and whole-corpus reads. Run `python tools/repo.py docs budget --strict` to spot oversized instructions; it does not measure actual billing.

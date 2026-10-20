@@ -14,7 +14,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools'))
-from repo_support import core, validation, knowledge, workflow
+from repo_support import core, validation, knowledge, workflow, areas, budgets
 
 
 class TemplateTests(unittest.TestCase):
@@ -74,6 +74,7 @@ class TemplateTests(unittest.TestCase):
     def test_ci_invokes_current_nonempty_infrastructure_suite(self):
         content = core.text(self.root / '.github/workflows/repo-health.yml')
         self.assertIn('python3 tools/repo.py check --tests', content)
+        self.assertIn('python3 tools/repo.py docs budget --strict', content)
         self.assertNotIn('discover -s tests', content)
         self.assertIn('contents: read', content)
         self.assertIn('persist-credentials: false', content)
@@ -109,6 +110,12 @@ class FixtureTests(unittest.TestCase):
             'commands': {name: None for name in
                          ('setup', 'format_check', 'lint', 'typecheck', 'test', 'build', 'smoke', 'security')}})
         core.dump_json(self.root / '.repo/areas.json', {'schema_version': 1, 'areas': []})
+        core.dump_json(self.root / '.repo/context-budgets.json',
+                       core.load_json(ROOT / '.repo/context-budgets.json'))
+        for rel in ('docs/INDEX.md', 'docs/agents/README.md'):
+            self.write(rel, '# Synthetic owner router\n\n'
+                       '<!-- AUTO-REGISTERED-AREAS:START -->\n'
+                       '<!-- AUTO-REGISTERED-AREAS:END -->\n')
         self.write('.codex/config.toml', '[agents]\nmax_concurrent_threads_per_session = 3\n')
         self.write('.claude/settings.json', '{}\n')
         for name in ('research-scout', 'verification-reviewer'):
@@ -159,7 +166,96 @@ class FixtureTests(unittest.TestCase):
                 rel = path.relative_to(self.root).as_posix()
                 if rel != '.repo/template-manifest.json':
                     files[rel] = core.sha(path)
-        core.dump_json(self.root / '.repo/template-manifest.json', {'template_version':'4.0.0','files':files})
+        core.dump_json(self.root / '.repo/template-manifest.json', {'template_version':'4.1.0','files':files})
+
+
+    def test_area_scaffolder_registers_a_single_canonical_owner_and_route(self):
+        self.command(['{python}', '-c', 'pass'])
+        created = areas.create_area(self.root, 'workflow-core', ['packages/workflow-core/**'],
+                                    ['test'], 'Workflow Core')
+        self.assertEqual(created['status'], 'DRAFT_NOT_APPROVED_OR_TESTED')
+        area = core.load_json(self.root / '.repo/areas.json')['areas'][0]
+        self.assertEqual(area['spec'], 'docs/areas/workflow-core/README.md')
+        self.assertEqual(area['guide'], 'docs/agents/areas/workflow-core.md')
+        self.assertIn('DRAFT', (self.root / area['spec']).read_text())
+        self.assertEqual(knowledge.context(self.root, 'area:workflow-core')['topic'], 'area:workflow-core')
+        self.assertEqual(validation.doc_errors(self.root), [])
+        plan = workflow.verification_plan(self.root, changed=['packages/workflow-core/src/service.ts'])
+        self.assertEqual([c['name'] for c in plan['checks']], ['test'])
+        self.assertEqual(plan['checks'][0]['status'], 'PLANNED')
+        self.assertEqual(self.cli('area', 'list').returncode, 0)
+        self.assertIn('workflow-core', self.cli('area', 'list').stdout)
+
+    def test_area_scaffolder_rejects_duplicates_and_unsafe_paths_without_partial_writes(self):
+        before = (self.root / '.repo/areas.json').read_bytes()
+        for path in ('../secret/**', '/absolute/**', 'C:\\outside', 'a|b', 'docs/../../x', ''):
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                areas.create_area(self.root, 'dangerous', [path])
+        self.assertEqual(before, (self.root / '.repo/areas.json').read_bytes())
+        self.assertFalse((self.root / 'docs/areas/dangerous/README.md').exists())
+        areas.create_area(self.root, 'valid', ['src/valid/**'])
+        with self.assertRaisesRegex(ValueError, 'already registered'):
+            areas.create_area(self.root, 'valid', ['src/valid/**'])
+        self.assertEqual(len(core.load_json(self.root / '.repo/areas.json')['areas']), 1)
+        self.assertEqual(validation.doc_errors(self.root), [])
+
+    def test_area_scaffolder_preserves_existing_owner_tables_on_malformed_markers(self):
+        owner = self.root / 'docs/INDEX.md'
+        owner.write_text('# No area markers here\n')
+        before = core.load_json(self.root / '.repo/areas.json')
+        with self.assertRaisesRegex(ValueError, 'markers'):
+            areas.create_area(self.root, 'new-area', ['src/area/**'])
+        self.assertEqual(before, core.load_json(self.root / '.repo/areas.json'))
+        self.assertFalse((self.root / 'docs/areas/new-area/README.md').exists())
+
+    def test_area_cli_missing_id_and_invalid_check_are_nonwriting(self):
+        self.assertEqual(self.cli('area','new','--path','src/area/**').returncode, 2)
+        self.assertEqual(self.cli('area','new','--id','a','--path','src/a/**','--check','does-not-exist').returncode, 2)
+        self.assertFalse((self.root/'docs/areas/a/README.md').exists())
+
+    def test_budget_report_is_estimate_and_does_not_treat_human_readme_as_mandatory(self):
+        self.write('README.md', '# Huge\n' + 'x' * 200000)
+        report = budgets.budget_report(self.root)
+        self.assertEqual(report['status'], 'WITHIN_CONFIGURED_LIMITS')
+        self.assertIn('NOT exact', report['estimate_method'])
+        self.assertEqual(self.cli('docs','budget','--strict').returncode, 0)
+
+    def test_budget_strict_fails_when_area_or_entrypoint_exceeds_threshold(self):
+        cfg = core.load_json(self.root / '.repo/context-budgets.json')
+        cfg['entrypoints']['AGENTS.md'] = 100
+        core.dump_json(self.root / '.repo/context-budgets.json', cfg)
+        self.write('AGENTS.md', '# Rules\n' + 'a' * 1000)
+        report = budgets.budget_report(self.root)
+        self.assertEqual(report['status'], 'OVER_BUDGET')
+        self.assertTrue(any(e['path']=='AGENTS.md' for e in report['warnings']))
+        self.assertEqual(self.cli('docs','budget','--strict').returncode, 2)
+        self.assertEqual(self.cli('docs','budget').returncode, 0)
+
+    def test_missing_and_bad_budget_config_fail_normal_static_validation(self):
+        cfg = self.root / '.repo/context-budgets.json'
+        cfg.unlink()
+        self.assertTrue(any('context budget' in x.lower() for x in validation.config_errors(self.root)))
+        core.dump_json(cfg, {'schema_version': 1, 'entrypoints': {},
+                             'max_document_tokens': -1, 'max_area_guide_tokens': 2200})
+        self.assertTrue(any('max_document_tokens' in x for x in validation.config_errors(self.root)))
+
+    def test_prompt_listing_and_reading_are_read_only(self):
+        self.write('docs/prompts/example.md', '# Example\n[GOAL]\n')
+        listed = self.cli('prompt', 'list')
+        self.assertEqual(listed.returncode, 0)
+        self.assertIn('example', listed.stdout)
+        shown = self.cli('prompt', 'show', 'example')
+        self.assertEqual(shown.returncode, 0)
+        self.assertIn('[GOAL]', shown.stdout)
+        self.assertEqual(self.cli('prompt','show','../../.env').returncode,2)
+        self.assertFalse((self.root/'.repo-local').exists())
+
+    def test_scaffold_docs_budget_is_checked_without_application_install(self):
+        areas.create_area(self.root, 'rendering', ['src/rendering/**'], ['test'])
+        report = budgets.budget_report(self.root)
+        self.assertEqual(report['status'], 'WITHIN_CONFIGURED_LIMITS')
+        self.assertTrue(any(r['topic']=='area:rendering' for r in report['route_budgets']))
+        self.assertEqual(self.cli('docs','check').returncode, 0)
 
     def test_path_traversal_and_windows_absolute_refused(self):
         for path in ('../outside', '/outside', 'C:/outside', r'C:\outside', 'docs/../../x', ''):

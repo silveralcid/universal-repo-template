@@ -25,6 +25,8 @@ jobs:
         run: python3 -c "import sys; assert sys.version_info >= (3, 11), 'Python 3.11+ required'"
       - name: Validate template and run infrastructure regression tests
         run: python3 tools/repo.py check --tests
+      - name: Enforce small entrypoints and selective context budgets
+        run: python3 tools/repo.py docs budget --strict
 
 # This workflow runs only documentation/agent/helper checks, not application checks.
 # No secrets, external writes, paid model calls, deployment, or automatic merge.

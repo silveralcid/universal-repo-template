@@ -15,6 +15,8 @@ from repo_support.core import VERSION, safe_path, load_json, dump_json, text, ma
 from repo_support.validation import doc_errors, agent_errors, config_errors
 from repo_support.knowledge import context, save_snapshot, compare_snapshot, new_record, inventory, search_records, BUCKETS
 from repo_support.workflow import verification_plan, execute_verification, adoption_plan, apply_adoption
+from repo_support.areas import create_area, list_areas
+from repo_support.budgets import budget_report
 ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -37,6 +39,17 @@ def parse_args():
     check.add_argument('--tests', action='store_true')
     docs = sub.add_parser('docs')
     docs.add_argument('mode', choices=('check', 'budget'))
+    docs.add_argument('--strict', action='store_true', help='Return exit code 2 if the configurable context budget is exceeded')
+    area = sub.add_parser('area', help='Register real project areas with canonical documents, agent routes and checks')
+    area.add_argument('mode', choices=('list', 'new'))
+    area.add_argument('--id', help='Lower-kebab-case area identifier')
+    area.add_argument('--title', help='Readable area name')
+    area.add_argument('--path', action='append', help='Owned source path/glob; repeat for several')
+    area.add_argument('--check', action='append', help='Existing project verification slot; repeat if needed')
+    area.add_argument('--budget', type=int, default=5000, help='Estimated-token budget for this area context pack')
+    prompt = sub.add_parser('prompt', help='List or display reusable agent task prompts; never invoke an AI client')
+    prompt.add_argument('mode', choices=('list', 'show'))
+    prompt.add_argument('name', nargs='?', help='Prompt name for show, e.g. sequential-build')
     agents = sub.add_parser('agents')
     agents.add_argument('mode', choices=('check',))
     agents.add_argument('--cli', action='store_true', help='Run only installed client --version commands')
@@ -111,9 +124,25 @@ def main():
             if args.action == 'check' and args.tests:
                 return subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', 'tools/tests', '-v'], cwd=ROOT, check=False).returncode
         elif args.action == 'docs':
-            counts = sorted(((len(text(p)) + 3) // 4, p.relative_to(ROOT).as_posix()) for p in markdown_files(ROOT))
-            emit(dict(largest=list(reversed(counts[-15:])), total_estimated_tokens=sum(n for n, _ in counts),
-                      note='chars/4 estimate, not tokenization; scan restricted to docs and agent roots'))
+            report = budget_report(ROOT)
+            emit(report)
+            return 2 if args.strict and report['warnings'] else 0
+        elif args.action == 'area':
+            if args.mode == 'list':
+                emit(list_areas(ROOT))
+            else:
+                if not args.id:
+                    raise ValueError('area new requires --id')
+                emit(create_area(ROOT, args.id, args.path or [], args.check, args.title, args.budget))
+        elif args.action == 'prompt':
+            folder = safe_path(ROOT, 'docs/prompts')
+            names = sorted(p.stem for p in folder.glob('*.md') if p.name != 'README.md')
+            if args.mode == 'list':
+                emit(names)
+            else:
+                if args.name not in names:
+                    raise ValueError('Unknown prompt name; available: ' + ', '.join(names))
+                print(text(safe_path(ROOT, f'docs/prompts/{args.name}.md')))
         elif args.action == 'agents':
             code = report_errors(agent_errors(ROOT), 'Agent static configuration checks')
             for binary in ('codex', 'claude'):

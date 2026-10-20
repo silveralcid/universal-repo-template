@@ -54,3 +54,16 @@ Commands are timeout-bounded. On POSIX the runner terminates the process group a
 Create the guide and actual commands before registering. Patterns use Python `fnmatchcase`: case-sensitive and `*` can cross `/`; they are not Gitignore semantics. `verify plan --path packages/workflow-core/src/jobs.ts` selects mapped checks. Unknown paths or no applicable selection fall back to all non-setup slots, not to zero tests. Mappings cannot prove dependency coverage; expand manually for shared contracts, root config, schemas and integration.
 
 The helper is optional. Running a native project command directly is legitimate; record the evidence accurately.
+
+## Automatic area registration
+
+When a new real subsystem emerges, create the guide and canonical spec together, before touching unrelated global instructions:
+
+```bash
+python tools/repo.py area new --id workflow-core --title 'Workflow Core' --path 'packages/workflow-core/**' --check test
+python tools/repo.py area list
+python tools/repo.py context --topic area:workflow-core
+python tools/repo.py docs budget --strict
+```
+
+This creates draft documents and adds mappings to `.repo/areas.json`, `docs/context/routes.json`, `docs/INDEX.md` and `docs/agents/README.md`. Existing documents are never silently replaced; a duplicate ID or unsafe path aborts. The new guide points to one area specification, not a second copy. You must still configure `test` in `.repo/project.json` before that slot can actually execute. `verify plan --path <file>` uses the registered paths as **hints**; path globs cannot prove transitive contract coverage.

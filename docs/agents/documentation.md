@@ -23,3 +23,9 @@ Record consumed paths, relevant section IDs and exact source commit when a long/
 `python tools/repo.py docs check` checks configured requirements, routes, provider scaffold structure and common Markdown local links/fragments. It supports ATX headings, explicit HTML IDs, inline links/images and reference definitions; it is not a complete Markdown renderer, semantic conflict detector, network link checker or runtime test. Use explicit simple ASCII anchors for stable cross-document IDs. Complex Markdown constructs and generated site-specific anchors need manual review.
 
 The checker traverses only root instruction files and documentation/provider roots. It skips dependency/build trees and symlinks. Module-local documentation elsewhere is checked only when linked as a target, not recursively linted; register critical area guidance under docs. `docs budget` reports estimated characters/4, not exact token counts.
+
+## New project domains
+
+When a real area earns dedicated documentation, run [the area scaffolder](../areas/README.md) instead of creating an isolated markdown file. It registers the canonical spec, agent pointer, indexed ownership and context route together. Generated content is explicitly DRAFT until an owner confirms its requirements. Update domain sections in the canonical area document; the agent guide stays short and links to its owner.
+
+[Context budget warnings](../context/README.md#area-registration-and-budgets) recommend targeted splitting; they do not allow deletion of decisions, research provenance or historical evidence. Exceeding a threshold isn't itself a reason to create dozens of fragmented documents.
