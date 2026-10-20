@@ -1,0 +1,32 @@
+name: Repository template health
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repo-health-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  template-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository without persistent credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check helper runtime
+        run: python3 -c "import sys; assert sys.version_info >= (3, 11), 'Python 3.11+ required'"
+      - name: Validate template and run infrastructure regression tests
+        run: python3 tools/repo.py check --tests
+
+# This workflow runs only documentation/agent/helper checks, not application checks.
+# No secrets, external writes, paid model calls, deployment, or automatic merge.
+# Review code changes before running workflows; do not run untrusted PR code in
+# privileged events or on persistent self-hosted runners.

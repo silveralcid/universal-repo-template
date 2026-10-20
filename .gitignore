@@ -1,0 +1,57 @@
+# Never commit private config, credentials or API keys
+.env
+.env.*
+!.env.example
+secrets/
+.secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/projects/
+.claude/todos/
+.claude/debug/
+.codex/auth.json
+.codex/sessions/
+.codex/history.jsonl
+
+# Local/raw evidence: keep the README tracked, ignore all generated contents
+/artifacts/*
+!/artifacts/README.md
+.context-out/
+.tmp/
+.cache/
+
+# Framework-neutral build and environment noise
+node_modules/
+.pnpm-store/
+.next/
+.nuxt/
+.turbo/
+dist/
+build/
+coverage/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.log
+*.swp
+.idea/
+.vscode/*.log
+.DS_Store
+Thumbs.db
+
+# Intentionally DO NOT ignore docs/research/, docs/evidence/ or docs/experiments/.
+# Commit only short, sanitized durable reports there; never raw private records.
+
+# Local helper state, private command receipts, caches and scratch work
+/.repo-local/
+/.worktrees/
+/scratch/*
+!/scratch/README.md
+.claude/agent-memory-local/
+.codex/logs/

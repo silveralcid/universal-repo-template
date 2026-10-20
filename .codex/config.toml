@@ -1,0 +1,5 @@
+# Shared Codex project configuration (trusted projects only).
+# Deliberately no model, provider, MCP servers, approval_policy, sandbox_mode,
+# plugin installs, authentication, or automatic hooks are configured here.
+[agents]
+max_concurrent_threads_per_session = 3

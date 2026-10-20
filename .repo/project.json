@@ -1,0 +1,18 @@
+{
+  "schema_version": 2,
+  "project_name": "REPLACE_ME",
+  "project_kind": "unspecified",
+  "integration_branch": "auto",
+  "release_branch": null,
+  "commands": {
+    "setup": null,
+    "format_check": null,
+    "lint": null,
+    "typecheck": null,
+    "test": null,
+    "build": null,
+    "smoke": null,
+    "security": null
+  },
+  "notes": "Null means NOT_CONFIGURED, not PASS. Commands are trusted argv/cwd/timeout_seconds objects; no implicit shell. Set only once a project stack is selected. No credentials."
+}
