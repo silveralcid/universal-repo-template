@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "max_document_tokens": 10000,
+  "max_area_guide_tokens": 2200,
+  "entrypoints": {
+    "AGENTS.md": 1500,
+    "CLAUDE.md": 700,
+    "START-HERE.md": 1600,
+    "docs/INDEX.md": 2200,
+    "docs/agents/README.md": 1700,
+    "docs/context/README.md": 1000
+  }
+}

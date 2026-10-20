@@ -14,3 +14,12 @@ As actual modules appear, add one row for their owned code paths, canonical docs
 Cross-cutting operational guides: [long-horizon plans](../../PLANS.md), [parallel-agent coordination](coordination.md), [agent smoke checks](agent-setup-validation.md), [trust boundaries](trust-boundaries.md), and [agent evaluation](agent-evaluation.md). Open these only when the task activates the concern.
 
 Real module mappings can be registered in [areas.json](../../.repo/areas.json); see [commands](commands.md). Startup uses [START-HERE](../../START-HERE.md); routine implementation uses [definition of done](definition-of-done.md).
+
+## Registered project areas
+
+The [area scaffolder](../../docs/areas/README.md) maintains the rows below. Read only the task-relevant guide and named sections. A generated DRAFT is not approved scope.
+
+| Area | Agent guide | Context topic | Narrow checks |
+|---|---|---|---|
+<!-- AUTO-REGISTERED-AREAS:START -->
+<!-- AUTO-REGISTERED-AREAS:END -->

@@ -1,159 +1,49 @@
 {
   "schema_version": 1,
   "topics": {
-    "documentation": {
+    "adoption": {
       "required": [
         {
-          "path": "docs/INDEX.md",
-          "reason": "Canonical document ownership map"
-        },
-        {
-          "path": "docs/agents/documentation.md",
-          "reason": "Single documentation authoring policy"
-        }
-      ],
-      "optional": [
-        {
-          "path": "docs/agents/README.md",
-          "reason": "Area navigation when ownership changes"
-        }
-      ],
-      "budget_tokens": 4500
-    },
-    "implementation": {
-      "required": [
-        {
-          "path": "docs/agents/delivery.md",
-          "reason": "Scope and delivery permissions"
-        },
-        {
-          "path": "docs/agents/definition-of-done.md",
-          "reason": "Observable completion"
-        },
-        {
-          "path": "docs/engineering/VERIFICATION.md",
-          "reason": "Applicable checks"
+          "path": "docs/agents/adoption-and-upgrades.md",
+          "reason": "Non-overwriting onboarding and updates"
         }
       ],
       "optional": [],
       "budget_tokens": 5000
     },
-    "review": {
+    "agent-evaluation": {
       "required": [
         {
-          "path": "docs/agents/definition-of-done.md",
-          "reason": "Review against real completion claims"
+          "path": "docs/agents/agent-evaluation.md",
+          "reason": "Provider-neutral evaluation rubric"
         },
         {
-          "path": "docs/engineering/VERIFICATION.md",
-          "reason": "Evidence standards"
-        }
-      ],
-      "optional": [],
-      "budget_tokens": 5000
-    },
-    "research": {
-      "required": [
-        {
-          "path": "docs/agents/research-and-evidence.md",
-          "reason": "Research maturity and non-canonical status"
-        },
-        {
-          "path": "docs/research/README.md",
-          "reason": "Where to file even tangential/uncertain-relevance research"
+          "path": "docs/agents/agent-setup-validation.md",
+          "reason": "Live/native smoke scenarios"
         }
       ],
       "optional": [
         {
-          "path": "docs/project/BRIEF.md",
-          "reason": "Project fit assessment only when relevant"
-        },
-        {
-          "path": "docs/architecture/OVERVIEW.md",
-          "reason": "Current implementation only when this research touches it"
+          "path": "docs/templates/agent-eval.md",
+          "reason": "Draft eval record"
         }
       ],
-      "budget_tokens": 3600
+      "budget_tokens": 3100
     },
-    "operations": {
+    "agent-safety": {
       "required": [
         {
-          "path": "docs/agents/delivery.md",
-          "reason": "Approvals and side-effect boundaries"
-        },
+          "path": "docs/agents/trust-boundaries.md",
+          "reason": "Handle untrusted content, data and tools"
+        }
+      ],
+      "optional": [
         {
           "path": "docs/engineering/SECURITY.md",
-          "reason": "Secrets and trust boundaries"
-        },
-        {
-          "path": "docs/runbooks/README.md",
-          "reason": "Available procedure and rollback route"
+          "reason": "Sensitive data policy"
         }
       ],
-      "optional": [
-        {
-          "path": "docs/engineering/VERIFICATION.md",
-          "reason": "Evidence required to confirm completion"
-        }
-      ],
-      "budget_tokens": 4000
-    },
-    "experiment": {
-      "required": [
-        {
-          "path": "docs/agents/research-and-evidence.md",
-          "reason": "Experiment safety and epistemic status"
-        },
-        {
-          "path": "docs/experiments/README.md",
-          "reason": "Hypothesis and trial reporting"
-        }
-      ],
-      "optional": [
-        {
-          "path": "docs/evidence/README.md",
-          "reason": "Observed run evidence only if tests executed"
-        }
-      ],
-      "budget_tokens": 3400
-    },
-    "evidence": {
-      "required": [
-        {
-          "path": "docs/engineering/VERIFICATION.md",
-          "reason": "What constitutes real verification"
-        },
-        {
-          "path": "docs/evidence/README.md",
-          "reason": "Dated evidence and outcome classification"
-        }
-      ],
-      "optional": [
-        {
-          "path": "docs/agents/research-and-evidence.md",
-          "reason": "Data handling and provenance details"
-        }
-      ],
-      "budget_tokens": 3800
-    },
-    "handoff": {
-      "required": [
-        {
-          "path": "docs/agents/handoff.md",
-          "reason": "Cross-session continuation contract"
-        },
-        {
-          "path": "docs/handoffs/README.md",
-          "reason": "Location and freshness limits of saved task packets"
-        }
-      ],
-      "optional": [
-        {
-          "path": "docs/agents/delivery.md",
-          "reason": "Branch and approval boundaries"
-        }
-      ],
-      "budget_tokens": 3800
+      "budget_tokens": 3200
     },
     "agent-setup": {
       "required": [
@@ -186,24 +76,29 @@
       ],
       "budget_tokens": 4400
     },
-    "planning": {
+    "bootstrap": {
       "required": [
         {
-          "path": "PLANS.md",
-          "reason": "When a long-horizon plan is warranted"
+          "path": "START-HERE.md",
+          "reason": "Human handoff and first-slice contract"
         },
         {
-          "path": "docs/agents/coordination.md",
-          "reason": "Lane ownership and sequencing"
+          "path": "docs/agents/startup.md",
+          "reason": "Startup decision flow"
         }
       ],
-      "optional": [
+      "optional": [],
+      "budget_tokens": 5000
+    },
+    "commands": {
+      "required": [
         {
-          "path": "docs/templates/execution-plan.md",
-          "reason": "Create only when requested"
+          "path": "docs/agents/commands.md",
+          "reason": "Registered checks and execution semantics"
         }
       ],
-      "budget_tokens": 3000
+      "optional": [],
+      "budget_tokens": 5000
     },
     "coordination": {
       "required": [
@@ -224,39 +119,118 @@
       ],
       "budget_tokens": 3000
     },
-    "agent-safety": {
+    "documentation": {
       "required": [
         {
-          "path": "docs/agents/trust-boundaries.md",
-          "reason": "Handle untrusted content, data and tools"
-        }
-      ],
-      "optional": [
-        {
-          "path": "docs/engineering/SECURITY.md",
-          "reason": "Sensitive data policy"
-        }
-      ],
-      "budget_tokens": 3200
-    },
-    "agent-evaluation": {
-      "required": [
-        {
-          "path": "docs/agents/agent-evaluation.md",
-          "reason": "Provider-neutral evaluation rubric"
+          "path": "docs/INDEX.md",
+          "reason": "Canonical document ownership map"
         },
         {
-          "path": "docs/agents/agent-setup-validation.md",
-          "reason": "Live/native smoke scenarios"
+          "path": "docs/agents/documentation.md",
+          "reason": "Single documentation authoring policy"
         }
       ],
       "optional": [
         {
-          "path": "docs/templates/agent-eval.md",
-          "reason": "Draft eval record"
+          "path": "docs/agents/README.md",
+          "reason": "Area navigation when ownership changes"
         }
       ],
-      "budget_tokens": 3100
+      "budget_tokens": 4500
+    },
+    "efficiency": {
+      "required": [
+        {
+          "path": "docs/agents/operating-cost.md",
+          "reason": "Single owner for model effort, delegation and selective context"
+        },
+        {
+          "path": "docs/context/README.md",
+          "reason": "How to select a bounded task pack"
+        }
+      ],
+      "optional": [
+        {
+          "path": "docs/agents/agent-evaluation.md",
+          "reason": "Measured outcomes when comparing agent workflows"
+        }
+      ],
+      "budget_tokens": 4500
+    },
+    "evidence": {
+      "required": [
+        {
+          "path": "docs/engineering/VERIFICATION.md",
+          "reason": "What constitutes real verification"
+        },
+        {
+          "path": "docs/evidence/README.md",
+          "reason": "Dated evidence and outcome classification"
+        }
+      ],
+      "optional": [
+        {
+          "path": "docs/agents/research-and-evidence.md",
+          "reason": "Data handling and provenance details"
+        }
+      ],
+      "budget_tokens": 3800
+    },
+    "experiment": {
+      "required": [
+        {
+          "path": "docs/agents/research-and-evidence.md",
+          "reason": "Experiment safety and epistemic status"
+        },
+        {
+          "path": "docs/experiments/README.md",
+          "reason": "Hypothesis and trial reporting"
+        }
+      ],
+      "optional": [
+        {
+          "path": "docs/evidence/README.md",
+          "reason": "Observed run evidence only if tests executed"
+        }
+      ],
+      "budget_tokens": 3400
+    },
+    "handoff": {
+      "required": [
+        {
+          "path": "docs/agents/handoff.md",
+          "reason": "Cross-session continuation contract"
+        },
+        {
+          "path": "docs/handoffs/README.md",
+          "reason": "Location and freshness limits of saved task packets"
+        }
+      ],
+      "optional": [
+        {
+          "path": "docs/agents/delivery.md",
+          "reason": "Branch and approval boundaries"
+        }
+      ],
+      "budget_tokens": 3800
+    },
+    "implementation": {
+      "required": [
+        {
+          "path": "docs/agents/delivery.md",
+          "reason": "Scope and delivery permissions"
+        },
+        {
+          "path": "docs/agents/definition-of-done.md",
+          "reason": "Observable completion"
+        },
+        {
+          "path": "docs/engineering/VERIFICATION.md",
+          "reason": "Applicable checks"
+        }
+      ],
+      "optional": [],
+      "budget_tokens": 5000
     },
     "incident": {
       "required": [
@@ -273,20 +247,6 @@
       ],
       "budget_tokens": 2100
     },
-    "bootstrap": {
-      "required": [
-        {
-          "path": "START-HERE.md",
-          "reason": "Human handoff and first-slice contract"
-        },
-        {
-          "path": "docs/agents/startup.md",
-          "reason": "Startup decision flow"
-        }
-      ],
-      "optional": [],
-      "budget_tokens": 5000
-    },
     "knowledge": {
       "required": [
         {
@@ -297,21 +257,99 @@
       "optional": [],
       "budget_tokens": 5000
     },
-    "adoption": {
+    "operations": {
       "required": [
         {
-          "path": "docs/agents/adoption-and-upgrades.md",
-          "reason": "Non-overwriting onboarding and updates"
+          "path": "docs/agents/delivery.md",
+          "reason": "Approvals and side-effect boundaries"
+        },
+        {
+          "path": "docs/engineering/SECURITY.md",
+          "reason": "Secrets and trust boundaries"
+        },
+        {
+          "path": "docs/runbooks/README.md",
+          "reason": "Available procedure and rollback route"
         }
       ],
-      "optional": [],
-      "budget_tokens": 5000
+      "optional": [
+        {
+          "path": "docs/engineering/VERIFICATION.md",
+          "reason": "Evidence required to confirm completion"
+        }
+      ],
+      "budget_tokens": 4000
     },
-    "commands": {
+    "planning": {
       "required": [
         {
-          "path": "docs/agents/commands.md",
-          "reason": "Registered checks and execution semantics"
+          "path": "PLANS.md",
+          "reason": "When a long-horizon plan is warranted"
+        },
+        {
+          "path": "docs/agents/coordination.md",
+          "reason": "Lane ownership and sequencing"
+        }
+      ],
+      "optional": [
+        {
+          "path": "docs/templates/execution-plan.md",
+          "reason": "Create only when requested"
+        }
+      ],
+      "budget_tokens": 3000
+    },
+    "prompting": {
+      "required": [
+        {
+          "path": "docs/prompts/README.md",
+          "reason": "Pick exactly one reusable prompt rather than loading every template"
+        },
+        {
+          "path": "docs/agents/operating-cost.md",
+          "reason": "Task classification, delegation and context budget policy"
+        }
+      ],
+      "optional": [
+        {
+          "path": "docs/agents/delivery.md",
+          "reason": "Only when the prompt authorizes repository or external writes"
+        }
+      ],
+      "budget_tokens": 5000
+    },
+    "research": {
+      "required": [
+        {
+          "path": "docs/agents/research-and-evidence.md",
+          "reason": "Research maturity and non-canonical status"
+        },
+        {
+          "path": "docs/research/README.md",
+          "reason": "Where to file even tangential/uncertain-relevance research"
+        }
+      ],
+      "optional": [
+        {
+          "path": "docs/project/BRIEF.md",
+          "reason": "Project fit assessment only when relevant"
+        },
+        {
+          "path": "docs/architecture/OVERVIEW.md",
+          "reason": "Current implementation only when this research touches it"
+        }
+      ],
+      "budget_tokens": 3600
+    },
+    "review": {
+      "required": [
+        {
+          "path": "docs/agents/definition-of-done.md",
+          "reason": "Review against real completion claims"
+        },
+        {
+          "path": "docs/engineering/VERIFICATION.md",
+          "reason": "Evidence standards"
         }
       ],
       "optional": [],

@@ -8,7 +8,7 @@ import re
 import subprocess
 from datetime import datetime, timezone
 
-VERSION = '4.0.0'
+VERSION = '4.1.0'
 ROOT_DOCS = ('README.md', 'START-HERE.md', 'AGENTS.md', 'CLAUDE.md', 'PLANS.md',
              'CONTRIBUTING.md', 'SECURITY.md', 'CHANGELOG.md')
 DOC_ROOTS = ('docs', '.agents', '.claude', '.codex', '.repo')

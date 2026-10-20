@@ -5,13 +5,15 @@ import tomllib
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 from .core import safe_path, load_json, text, markdown_files, anchors, links, frontmatter
+from .budgets import budget_config_errors
 
 REQUIRED = ['README.md', 'START-HERE.md', 'AGENTS.md', 'CLAUDE.md', 'PLANS.md',
             '.repo/project.json', '.repo/areas.json', 'docs/INDEX.md',
             'docs/context/routes.json', 'docs/project/BRIEF.md',
             'docs/agents/startup.md', 'docs/agents/documentation.md',
             'docs/engineering/VERIFICATION.md', 'docs/agents/definition-of-done.md',
-            'tools/tests/test_repo_tool.py']
+            'tools/tests/test_repo_tool.py', '.repo/context-budgets.json',
+            'docs/prompts/README.md', 'docs/areas/README.md']
 CORE_SKILLS = ('project-bootstrap', 'implement-task', 'review-change', 'research-scout',
                'docs-steward', 'evidence-reporter', 'work-handoff')
 
@@ -70,12 +72,24 @@ def config_errors(root: Path) -> list[str]:
                 errors.append(f'Area {ident}: missing guide {guide}')
         except ValueError as exc:
             errors.append(str(exc))
+        if area.get('spec'):
+            try:
+                if not safe_path(root, area['spec']).is_file():
+                    errors.append(f'Area {ident}: missing canonical spec {area["spec"]}')
+            except ValueError as exc:
+                errors.append(str(exc))
+            routes = load_json(safe_path(root, 'docs/context/routes.json')).get('topics', {})
+            route = routes.get('area:' + str(ident))
+            if not route or not all(any(entry.get('path') == path for entry in route.get('required', []))
+                                    for path in (guide, area['spec'])):
+                errors.append(f'Area {ident}: missing or incomplete context route')
         for check in area.get('checks', []):
-            if check not in commands:
-                errors.append(f'Area {ident}: unknown check {check}')
+            if check not in commands or check == 'setup':
+                errors.append(f'Area {ident}: unknown/non-verification check {check}')
         for pattern in area.get('paths', []):
             if not pattern or pattern.startswith('/') or '..' in pattern.split('/') or '\\' in pattern:
                 errors.append(f'Area {ident}: invalid path pattern {pattern}')
+    errors += budget_config_errors(root)
     return errors
 
 

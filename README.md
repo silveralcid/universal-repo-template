@@ -1,6 +1,6 @@
 # Universal Agent Repository Template
 
-**Version 4.0.0 · Codex + Claude Code · framework-neutral · application-empty**
+**Version 4.1.0 · Codex + Claude Code · framework-neutral · application-empty**
 
 A reusable repository foundation for starting and maintaining real projects with AI coding agents. It provides shared operating rules, native agent adapters, selective documentation routing, first-build instructions, research and experiment storage, truthful verification evidence, resumable work and safe adoption tooling. It does **not** choose your application's language, framework, engine, package manager, database, cloud or source layout.
 
@@ -17,6 +17,10 @@ A reusable repository foundation for starting and maintaining real projects with
 - [Research, experiments and evidence](#research-experiments-and-evidence)
 - [Commands, verification and receipts](#commands-verification-and-receipts)
 - [Context, indexes and resuming work](#context-indexes-and-resuming-work)
+- [Area scaffolding and selective doc ownership](#area-scaffolding-and-selective-doc-ownership)
+- [Reusable agent task prompts](#reusable-agent-task-prompts)
+- [Cost-aware model and delegation routing](#cost-aware-model-and-delegation-routing)
+- [Context size guardrails](#context-size-guardrails)
 - [Parallel work and delivery](#parallel-work-and-delivery)
 - [Safety, privacy and rights](#safety-privacy-and-rights)
 - [Adoption and maintenance](#adoption-and-maintenance)
@@ -77,10 +81,10 @@ Provide a desired outcome and constraints you already know. The agent derives th
 | Included now | Intentionally not preinstalled |
 |---|---|
 | Shared instructions and native Codex/Claude configuration | Application framework, game engine or monorepo manager |
-| Seven reusable task-triggered skills | Model choice, paid provider calls or global model routing |
+| Seven reusable task-triggered skills plus eight prompt templates | Model choice, paid provider calls or global model routing |
 | Two bounded research/review specialists per provider | Autonomous manager swarm or speculative agent roles |
 | Research, experiments, decisions, evidence, plans and handoffs | Embedding service, vector database or cloud artifact store |
-| Deterministic local helper tools and their tests | Application dependencies, database, auth or cloud infrastructure |
+| Deterministic local helper tools, area scaffolder and budget warnings | Application dependencies, database, auth or cloud infrastructure |
 | Optional GitHub template-health workflow | Deployment, automatic merge or production access |
 | Safe non-overwriting adoption and provenance manifest | Automatic upgrades or forced policy replacement |
 
@@ -100,6 +104,7 @@ A small project uses the same core without activating every folder. A large proj
 ├── .repo/
 │   ├── project.json              # Project identity, branch and real commands
 │   ├── areas.json                # Optional real-module guide/check mappings
+│   ├── context-budgets.json      # Entrypoint, area-guide and route warning limits
 │   └── template-manifest.json    # Pristine distribution hashes for adoption
 ├── .agents/skills/               # Canonical reusable workflows
 ├── .codex/
@@ -121,6 +126,8 @@ A small project uses the same core without activating every folder. A large proj
 │   ├── project/                  # Project brief and first outcome
 │   ├── architecture/             # Current architecture/ownership description
 │   ├── agents/                   # Operational policies and area guides
+│   ├── areas/                    # DRAFT -> approved per-area canonical specifications
+│   ├── prompts/                  # Eight reusable task prompts, no provider lock-in
 │   ├── context/                  # Minimal required/optional reading routes
 │   ├── contracts/                # Real cross-subsystem or unresolved boundaries
 │   ├── decisions/ / adr/         # Approved intent and technical choices
@@ -307,6 +314,70 @@ python tools/repo.py context diff --snapshot .repo-local/context-first.json
 
 A snapshot pins consumed file bytes and reports added/removed routes, changed files and missing files. It does not prove semantic alignment. Inspect the affected sections and preserve useful work; an unrelated layout change should not trigger a full-document reread. Snapshots refuse overwrites; use unique lane/session names. Store durable cross-machine continuation facts in [handoffs](docs/agents/handoff.md), not only local cache.
 
+## Area scaffolding and selective doc ownership
+
+Both BEAT BAES and Harem King illustrated the same failure mode: as a repository grows, repeating all decisions in every `AGENTS.md`, prompt and design guide wastes context and causes contradictory instructions. In v4.1 the reusable solution is **one owner per topic**, plus the *minimum task-specific routing* needed to find that owner. A new domain is introduced only when real code or a stable workflow requires it, not simply because the template has a folder available.
+
+For example, after creating a real module and deciding its responsibility:
+
+```bash
+python tools/repo.py area new --id workflow-core \
+  --title 'Workflow Core' \
+  --path 'packages/workflow-core/**' \
+  --check test --check typecheck
+python tools/repo.py area list
+python tools/repo.py context --topic area:workflow-core
+python tools/repo.py verify plan --path packages/workflow-core/src/index.ts
+python tools/repo.py docs check
+```
+
+The `area new` command performs **one registration operation**: it creates `docs/areas/workflow-core/README.md` (canonical DRAFT), `docs/agents/areas/workflow-core.md` (short agent pointer), adds the area paths and check slots to `.repo/areas.json`, registers an `area:workflow-core` route in `docs/context/routes.json`, and updates the auto-registered tables in the human [owner map](docs/INDEX.md) and [agent router](docs/agents/README.md). Each generated source is a **DRAFT**, not owner-approved behavior, a working implementation or a passing test. Fill in approved content after your real decisions exist. Re-running an existing area or passing unsafe paths refuses overwrites.
+
+Each new route lists only its area's canonical specification and guide, plus `AGENTS.md` automatically. The route does **not** concatenate content or preload adjacent areas. An agent should inspect the relevant section(s) in that source, then actual code and tests. Open a neighboring area only when the task crosses that boundary; keep technical cross-area contracts in `docs/contracts/`. The `--check` values must be known slots from `.repo/project.json`; `NOT CONFIGURED` remains incomplete until real commands are registered and executed. Path matching is a convenience filter, not proof that integration tests cover all transitive dependencies.
+
+**When to split a large document:** Look for a real distinct domain or an interface that multiple agents can own independently. Move the full body to one canonical area file; make indexes and provider rules redirect to it, preserve identifiers and existing heading links, and update only affected routes in the same change. Avoid arbitrary file-per-paragraph fragmentation and don't delete historical evidence to satisfy a size limit. See [documentation authoring policy](docs/agents/documentation.md).
+
+## Reusable agent task prompts
+
+The eight editable, copy-and-paste prompts under [docs/prompts/](docs/prompts/README.md) are:
+
+| Name | When to choose it |
+|---|---|
+| `investigate` | Bounded evidence, hypotheses and Ready implementation packet, **no code edits** |
+| `implement` | One settled feature or vertical slice with real integration, tests and draft PR |
+| `sequential-build` | Long autonomous implementation; explicit blockers, dependencies and recoverable continuation |
+| `bugfix` | Reproduction, narrow root-cause repair, regression defense |
+| `qa-review` | Independent review focused on acceptance and correctness, not subjective style |
+| `integration` | Fresh branches, overlapping authorities, staged QA and merge permission gates |
+| `research` | Reusable evidence that may be tangential; never silently product-approved |
+| `continuation` | Read current SHA and changed sections, then resume unfinished work without rediscovery |
+
+```bash
+python tools/repo.py prompt list
+python tools/repo.py prompt show sequential-build
+```
+
+The helper **prints** prompts without executing an AI client or changing source. Replace `[GOAL]`, `[CONSTRAINTS]`, `[ACCEPTANCE]`, etc., with the actual brief; omit irrelevant placeholders. Every prompt defers to `AGENTS.md`, live source state and the canonical docs. Do **not** send every prompt as a giant standing system message, clone the rules into each provider, or presume prompt wording overrides native permissions. For a brand-new app, `START-HERE.md` is usually a better first interaction; use task prompts after the project exists or when a specific workflow is needed.
+
+## Cost-aware model and delegation routing
+
+The [single policy owner](docs/agents/operating-cost.md) explains how to choose effort across Codex/Claude Code without hardcoding a model name that may become stale. In brief: tiny searches and mechanical changes stay in the same session; settled feature work uses one capable implementer with a clear acceptance contract; ambiguous architecture, high-blast-radius integration or repeated contradictory findings justify stronger reasoning or independent review. Delegate to subagents **only when scopes are genuinely independent** and the expected value exceeds setup/review/integration costs. For dependent changes, a sequential implementation or designated coordinator is usually more reliable and economical than a swarm.
+
+The objective is **lowest expected total work for a correct result**. Cheap first calls can become expensive if they produce repeated mistakes. More context is not automatically better: large research dumps, full README ingestion, historical logs and unfiltered source scans can add cost without improving evidence. A Ready packet saves re-triage; the implementation agent still inspects current code and verifies drift. The environment chooses available models, usage tiers and billing—**this repository does not control or measure API or subscription costs**. Only claim financial/token savings from actual comparable usage data.
+
+## Context size guardrails
+
+```bash
+python tools/repo.py docs budget
+python tools/repo.py docs budget --strict
+python tools/repo.py context --topic efficiency
+python tools/repo.py context --topic prompting
+```
+
+`docs budget` now compares root entrypoints, area guides, ordinary documentation and required context packs against editable thresholds in [`.repo/context-budgets.json`](.repo/context-budgets.json). It reports largest files, estimated chars÷4, per-topic route budgets, violations and advice; `--strict` returns exit status **2** when a configured limit is exceeded. No application code, dependencies or raw logs are read. The comprehensive **human** README and historical evidence are intentionally exempt from per-file alarms. The budget guard is advisory by default and can be added to CI as a nonzero quality gate for the template; it is not proof of exact model tokens, provider prices, cache hits or semantics.
+
+When over budget, search for task-specific headings, split at coherent ownership boundaries, link to canonical source and reduce **required** routes—not simply raise limits or delete decisions. Optional docs, archived research and raw artifacts should never load implicitly. Recheck source-hash snapshots during handoffs to avoid rereading unchanged areas; changed hashes still require semantic inspection of affected sections.
+
 ## Parallel work and delivery
 
 Use independent branches/worktrees and exclusive writing scopes. A task packet names the base, owners, dependencies, acceptance and checks. Dependent work is sequenced; it is not made independent by assigning another model. A coordinator stages and verifies integrated changes in dependency order and merges only within explicitly granted authority. Shared schemas and hot files require coordination even when Git reports a clean merge.
@@ -343,7 +414,7 @@ A race or write failure can leave already-added files; inspect Git diff rather t
 
 ### Evolving the project
 
-Add only real area guides, native app checks and accepted architecture. Preserve a single owner when splitting docs; keep stable simple anchors and one-hop redirects; update routes in the same change. Root instructions stay compact even as the human README grows. `docs budget` is an approximate diagnostic, not a reason to delete unique evidence.
+Add only real area guides, native app checks and accepted architecture. Prefer `area new` to keep indexes/routes consistent. Preserve a single owner when splitting docs; keep stable simple anchors and one-hop redirects; update routes in the same change. Root instructions stay compact even as the human README grows. `docs budget --strict` can flag large entrypoints/routes, but is an estimate and never a reason to delete unique evidence.
 
 The optional `.github/workflows/repo-health.yml` validates only this infrastructure. It has read-only repository permissions, a commit-pinned checkout action with credential persistence disabled, a job timeout, no secrets, no deployments and no app test command registry execution. Once a real project exists, add stack-specific CI separately and choose branch protection/required checks explicitly. Shipping the YAML does not mean GitHub ran it.
 
@@ -358,9 +429,12 @@ The template manifest is a baseline for safe comparisons, not a command to overw
 | `doctor [--strict]` | Local project/Git/client readiness; strict exits incomplete for unset checks |
 | `check [--tests]` | Static template checks; `--tests` additionally executes infrastructure tests |
 | `docs check` | Common local link/fragment, route, configuration and adapter checks |
-| `docs budget` | Estimated character/4 counts; bounded docs/provider traversal |
+| `docs budget [--strict]` | Configured file and route estimates; strict reports budget violations via exit 2 |
 | `agents check [--cli]` | Static native files; optional client `--version` only |
 | `branch check [--strict]` | Cached local Git preflight; never fetches or contacts GitHub |
+| `area list` | Registered actual domains and their owners/checks |
+| `area new --id ID --path GLOB [--check SLOT] [--title TITLE]` | Generates DRAFT canonical area docs, guide, indexes and route in one pass |
+| `prompt list` / `prompt show NAME` | Lists/prints task prompts; no AI execution or file writes |
 | `context list` | Available task topics |
 | `context --topic TOPIC [--include-optional] [--format json]` | Required/optional paths and reasons, no body concatenation |
 | `context --topic TOPIC --snapshot .repo-local/NAME.json` | Creates a new local source-content snapshot |
@@ -390,6 +464,9 @@ Record kinds: `research`, `experiment`, `evidence`, `task`, `plan`, `handoff`, `
 | Catalog absent/stale | Run `catalog build --write`; search itself uses current source records. |
 | Snapshot file already exists | Use a new lane/session filename; overwrite protection is deliberate. |
 | Link-fragment failure | Add/use a stable explicit ASCII HTML anchor or a supported simple ATX heading; manually review unusual Markdown renderer behavior. |
+| Area route is missing after manual edits | Use `area new` for new areas, or reconcile `.repo/areas.json`, the owner indices and `docs/context/routes.json`; `docs check` reports missing generated links. |
+| `docs budget --strict` exits 2 | Inspect listed files/routes and adjust task-specific reading or real document boundaries; thresholds in `.repo/context-budgets.json`. |
+| Need an implementation prompt immediately | Use `prompt show implement` or `prompt show sequential-build` and fill only the applicable placeholders. |
 | Adoption conflicts | Expected in real projects. Reconcile by owner on a branch; never force-copy existing instructions. |
 | Raw artifacts disappeared on another machine | Ignored local files are not backed up. Store durable approved evidence and a manifest in controlled shared storage. |
 

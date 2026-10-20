@@ -27,6 +27,8 @@ One **canonical owner per topic**. This is a pointer table, not a duplicate spec
 | Archive and supersession policy | [Archive](archive/README.md) |
 | Local raw/generated run artifacts (ignored) | [Artifact policy](../artifacts/README.md) |
 | Machine context routes | [Context router](context/README.md) |
+| Approved domain-specific requirements | [Project area specifications](areas/README.md) |
+| Reusable task prompt library | [Task prompt index](prompts/README.md) |
 
 ## Add an owner
 
@@ -56,7 +58,17 @@ Introduce a new row only when new functionality genuinely needs a new canonical 
 | Registered commands and scoped execution | [Command registration](agents/commands.md) |
 | Knowledge search and consumed-context hashes | [Knowledge navigation](agents/knowledge-navigation.md) |
 | Safe template adoption and upgrades | [Adoption](agents/adoption-and-upgrades.md) |
-| Proportional context and work cost | [Operating cost](agents/operating-cost.md) |
+| Model-agnostic delegation, cost and context choices | [Operating cost](agents/operating-cost.md) |
+| Configured entrypoint/area/route token estimates | [Context budget configuration](../.repo/context-budgets.json) |
 | Optional local task contracts | [Task packets](tasks/README.md) |
 | Cross-subsystem and unresolved contracts | [Contracts](contracts/README.md) |
 | Native provider source references | [Provider references](reference/PROVIDER-SOURCES.md) |
+
+## Registered project areas
+
+Generated rows point to canonical specifications and never duplicate their contents.
+
+| Area | Canonical owner |
+|---|---|
+<!-- AUTO-REGISTERED-AREAS:START -->
+<!-- AUTO-REGISTERED-AREAS:END -->
