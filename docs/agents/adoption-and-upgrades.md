@@ -4,7 +4,7 @@
 
 ## New project
 
-Extract the inner `universal-repo-template/` contents into your intended root, including hidden folders. Review configuration, set the brief, and follow [START-HERE](../../START-HERE.md). No source layout, framework or database is created until the requested project needs it.
+Extract the inner `project-starter/` contents into your intended root, including hidden folders. Review configuration, set the brief, and follow [START-HERE](../../START-HERE.md). No source layout, framework or database is created until the requested project needs it.
 
 ## Established project
 

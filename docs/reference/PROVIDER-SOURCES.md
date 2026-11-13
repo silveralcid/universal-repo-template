@@ -1,6 +1,6 @@
 # Provider and tooling references
 
-Checked 2026-10-20. These external references inform native adapter syntax, not project requirements. Recheck when clients change; account and managed settings still apply. No vendor content is copied into this template.
+These external references inform native adapter syntax, not project requirements. Recheck when clients change; account and managed settings still apply. No vendor content is copied into this template.
 
 | Topic | Official source |
 |---|---|
@@ -18,4 +18,4 @@ Native client sessions, authentication, OS permission enforcement and cloud exec
 
 ## Template CI provenance
 
-The template-only workflow pins [actions/checkout v7.0.1 to commit 3d3c42e5aac5ba805825da76410c181273ba90b1](https://github.com/actions/checkout/commit/3d3c42e5aac5ba805825da76410c181273ba90b1), inspected 2026-10-20. Its permissions and untrusted-code handling follow [GitHub's secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use). A static local review does not claim this workflow has run in GitHub Actions.
+The template-only workflow pins [actions/checkout v7.0.1 to commit 3d3c42e5aac5ba805825da76410c181273ba90b1](https://github.com/actions/checkout/commit/3d3c42e5aac5ba805825da76410c181273ba90b1). Its permissions and untrusted-code handling follow [GitHub's secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use). A static local review does not claim this workflow has run in GitHub Actions.
