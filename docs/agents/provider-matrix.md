@@ -1,6 +1,6 @@
 # Codex and Claude Code capability matrix
 
-Native details were checked against official documentation on 2026-10-20; installed versions and managed settings can differ. See [sources](../reference/PROVIDER-SOURCES.md) and [smoke checks](agent-setup-validation.md).
+Installed versions and managed settings can differ. Recheck native behavior for the client version in use. See [sources](../reference/PROVIDER-SOURCES.md) and [smoke checks](agent-setup-validation.md).
 
 | Concern | Codex | Claude Code |
 |---|---|---|
