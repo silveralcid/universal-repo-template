@@ -29,6 +29,7 @@ One **canonical owner per topic**. This is a pointer table, not a duplicate spec
 | Machine context routes | [Context router](context/README.md) |
 | Approved domain-specific requirements | [Project area specifications](areas/README.md) |
 | Reusable task prompt library | [Task prompt index](prompts/README.md) |
+| Repository-attached full agent prompts and compact dropdown/copy launch handoffs | [Agent launch pack standard](prompts/repository-attached-agent-launch-packs.md) and [template](templates/agent-launch-pack.md) |
 
 ## Add an owner
 

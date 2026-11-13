@@ -12,6 +12,7 @@ Use `python tools/repo.py prompt list` or `python tools/repo.py prompt show <nam
 | [Bug fix](bugfix.md) | Reproduce, isolate the root cause, fix and defend with regression tests |
 | [QA and independent review](qa-review.md) | Review objective correctness, not alternative personal style |
 | [Integration](integration.md) | Coordinate branches, ownership and dependency-aware merge preparation |
+| [Repository-attached agent launch packs](repository-attached-agent-launch-packs.md) | Store each full lane/integrator prompt in GitHub and return one dropdown + short copyable launch script; [full prompt skeleton](../templates/agent-launch-pack.md) |
 | [Research](research.md) | Research of possibly unrelated or tangential value |
 | [Continuation](continuation.md) | Resume from prior branch, plan and evidence without restarting everything |
 
