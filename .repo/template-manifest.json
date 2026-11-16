@@ -141,7 +141,7 @@
     "docs/templates/test-report.md": "d660b074cba71662ce657b9d1c75cf2e37f13367d69f27aba28abcf30ffb635a",
     "scratch/README.md": "079013c1da27b8ee26016891c26e60e1cc228480103d342e927e9096bae3acae",
     "tools/README.md": "863e1ecf7b611dca87c2794d122e27a4a7c2174d505483b0af5382c0354f2900",
-    "tools/export_source.py": "ac860e22f742a5fa243e060d0626bc148a48be08ae53f8b044c1cf5edf04ed40",
+    "tools/export_source.py": "a4db0cca5a085db27a171f882318c4adc6925b73e721c94032087f2db04de7cf",
     "tools/repo.py": "ae599e4ffceeaedc6cbf6d6476d0ef063920f1fc687cd319665a15aaeb37774c",
     "tools/repo_support/__init__.py": "2b9145f9a3fa286d92b7f7d5a7ed6d9a2e5638611e4a50411c69e9769ac5f746",
     "tools/repo_support/areas.py": "7c3d3dacf544c8c31aff2e0af76918cf9a43a5858f135fe0830d3f70985876c1",
