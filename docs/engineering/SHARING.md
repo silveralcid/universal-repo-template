@@ -30,6 +30,12 @@ python tools/export_source.py --denylist-file ../private-terms.txt --output ../p
 
 Terms are matched case-insensitively against paths and text. Findings report categories and relative paths without printing matched values. The denylist must be outside the source root and is never packaged. Passing only proves that the configured checks found no matches.
 
+## Continuous source-independence checks
+
+The repository health workflow runs `python3 tools/export_source.py --check-tracked --repository "$GITHUB_REPOSITORY"`. This checks the whole reviewed manifest, rejects unmanifested Git-tracked files, and detects links to *different repositories owned by the same GitHub account* across GitHub HTTPS, SSH, raw-content and API URLs. It does not require embedding any personal project names in the public repository.
+
+These generic checks cannot recognize every employer, customer, code name or distinctive phrase. Before publishing a template for reuse, supply an external, private `--denylist-file` containing sensitive names and identifiers. Keep that list and its scan output outside the source tree; run the check after the final source edit. A clean current archive does not sanitize prior public commits, pull-request revisions, GitHub caches, forks or external copies. Treat cleanup of historical public objects as a separately planned operation rather than a routine force push.
+
 ## Public hosting
 
 Do not use a personally identifying account for an anonymity-sensitive publication. Changing visible files does not remove older versions, author metadata, pull-request references, archived releases, or other people's copies. History rewriting is a separate, coordinated operation and may invalidate signatures, break open pull requests, or discard concurrent work.

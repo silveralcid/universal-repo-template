@@ -5,9 +5,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path, PurePosixPath
 import re
 import stat
+import subprocess
 import sys
 import zipfile
 
@@ -29,6 +31,12 @@ SECRET = re.compile(
     r'\bsk-[A-Za-z0-9_-]{24,}\b')
 PERSONAL_PATH = re.compile(
     r'(?:/Users/|/home/|[A-Za-z]:[\\/]Users[\\/])[A-Za-z0-9_.-]+[\\/]')
+
+
+GITHUB_REPO_LINK = re.compile(
+    r'(?:https?://(?:www\.)?github\.com/|git@github\.com:|'
+    r'https?://raw\.githubusercontent\.com/|https?://api\.github\.com/repos/)'
+    r'(?P<owner>[A-Za-z0-9-]+)/(?P<repo>[A-Za-z0-9_.-]+)', re.I)
 
 
 def checked_path(root: Path, relative: str) -> Path:
@@ -87,15 +95,35 @@ def load_payload(root: Path) -> dict[str, bytes]:
     return payload
 
 
-def findings(payload: dict[str, bytes], terms: tuple[str, ...] = ()) -> list[str]:
+def unreviewed_tracked_count(root: Path, included: set[str]) -> int:
+    """Count Git-tracked files omitted from the reviewed package, without printing their paths."""
+    result = subprocess.run(['git', 'ls-files', '--cached', '-z'], cwd=root,
+                            check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    tracked = {part.decode('utf-8') for part in result.stdout.split(b'\0') if part}
+    return len(tracked - included)
+
+
+def repo_identity(value: str) -> tuple[str, str]:
+    if not re.fullmatch(r'[A-Za-z0-9-]+/[A-Za-z0-9_.-]+', value):
+        raise ValueError('Expected a repository identity in owner/name form')
+    return tuple(part.casefold() for part in value.split('/', 1))
+
+
+def findings(payload: dict[str, bytes], terms: tuple[str, ...] = (),
+             repository: str | None = None) -> list[str]:
     """Return locations and categories only, never matched private values."""
     issues = []
+    owner, current = repo_identity(repository) if repository else ('', '')
     for relative, data in sorted(payload.items()):
         text = data.decode('utf-8')
         combined = (relative + '\n' + text).casefold()
         if any(term.casefold() in combined for term in terms if term.strip()):
             issues.append(f'{relative}: private denylist match')
         for number, line in enumerate(text.splitlines(), 1):
+            if owner and any(match.group('owner').casefold() == owner
+                             and match.group('repo').removesuffix('.git').casefold() != current
+                             for match in GITHUB_REPO_LINK.finditer(line)):
+                issues.append(f'{relative}:{number}: link to another repository under the same owner')
             if SECRET.search(line):
                 issues.append(f'{relative}:{number}: credential-like content')
             if PERSONAL_PATH.search(line):
@@ -129,6 +157,10 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, help='New ZIP path; omit for a read-only check')
     parser.add_argument('--denylist-file', type=Path, help='Private terms file outside the source root')
+    parser.add_argument('--repository', default=os.environ.get('GITHUB_REPOSITORY'),
+                        help='owner/name to detect links to a different repository under the same owner')
+    parser.add_argument('--check-tracked', action='store_true',
+                        help='Require all Git-tracked files to be listed in the reviewed manifest')
     args = parser.parse_args(argv)
     root = Path(__file__).resolve().parents[1]
     try:
@@ -140,7 +172,13 @@ def main(argv: list[str] | None = None) -> int:
             terms = tuple(line.strip() for line in denylist.read_text(encoding='utf-8').splitlines()
                           if line.strip() and not line.lstrip().startswith('#'))
         payload = load_payload(root)
-        issues = findings(payload, terms)
+        if args.check_tracked:
+            omitted = unreviewed_tracked_count(root, set(payload))
+            if omitted:
+                print(f'BLOCKED: {omitted} Git-tracked files omitted from the reviewed manifest.',
+                      file=sys.stderr)
+                return 2
+        issues = findings(payload, terms, args.repository)
         if issues:
             for issue in issues:
                 print('BLOCKED:', issue, file=sys.stderr)
@@ -153,7 +191,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f'PASS: {len(payload)} reviewed source files; no configured scan matches.')
         print('LIMIT: identifier and metadata checks do not establish anonymity or scan Git history.')
         return 0
-    except (OSError, ValueError, TypeError, UnicodeError) as exc:
+    except (OSError, ValueError, TypeError, UnicodeError, subprocess.CalledProcessError) as exc:
         print(f'BLOCKED: {type(exc).__name__}. Check input paths, manifest, and file contents.',
               file=sys.stderr)
         return 2
