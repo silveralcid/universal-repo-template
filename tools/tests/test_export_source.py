@@ -1,5 +1,6 @@
 """Regression coverage for reviewed source export and metadata minimization."""
 from pathlib import Path
+from unittest.mock import patch
 import hashlib
 import json
 import sys
@@ -102,6 +103,43 @@ class ExportTests(unittest.TestCase):
         self.assertFalse(package.findings({'a.txt': b'template@example.invalid'}))
         address = ('fixture' + '@' + 'mail.test').encode()
         self.assertTrue(package.findings({'a.txt': address}))
+
+    def test_cross_project_links_under_same_owner_are_blocked(self):
+        references = (
+            'https://github.com/sample-owner/another-project/tree/main/docs',
+            'git@github.com:sample-owner/another-project.git',
+            'https://raw.githubusercontent.com/sample-owner/another-project/main/file.md',
+            'https://api.github.com/repos/sample-owner/another-project/issues/2',
+        )
+        for reference in references:
+            with self.subTest(reference=reference):
+                result = package.findings({'notes.md': reference.encode()},
+                                          repository='sample-owner/source-template')
+                self.assertEqual(result, [
+                    'notes.md:1: link to another repository under the same owner'
+                ])
+                self.assertNotIn('another-project', str(result))
+
+    def test_own_repository_and_unrelated_public_links_are_allowed(self):
+        payload = {'notes.md': (
+            b'https://github.com/sample-owner/source-template/blob/main/README.md\n'
+            b'https://github.com/actions/checkout\n'
+        )}
+        self.assertEqual(package.findings(payload, repository='sample-owner/source-template'), [])
+
+    def test_invalid_repo_identity_fails_closed(self):
+        with self.assertRaises(ValueError):
+            package.findings({'notes.md': b'hello'}, repository='invalid identity')
+
+    def test_unreviewed_tracked_paths_are_counted_without_leaking_names(self):
+        with patch.object(package.subprocess, 'run') as run:
+            run.return_value.stdout = (
+                b'README.md\0.repo/template-manifest.json\0unreviewed-private.md\0'
+            )
+            count = package.unreviewed_tracked_count(
+                self.root, {'README.md', '.repo/template-manifest.json'})
+            self.assertEqual(count, 1)
+            self.assertTrue(run.called)
 
     def test_token_patterns_are_detected_without_echo(self):
         token = 'ghp_' + 'A' * 30
