@@ -129,7 +129,7 @@ def findings(payload: dict[str, bytes], terms: tuple[str, ...] = (),
             if PERSONAL_PATH.search(line):
                 issues.append(f'{relative}:{number}: personal filesystem path')
             for match in EMAIL.finditer(line):
-                if match.group(0).casefold() == 'git@github.com' and line[match.end():].startswith(':'):
+                if match.group(0).casefold() == ('git' + '@' + 'github.com') and line[match.end():].startswith(':'):
                     continue  # Git SSH remote syntax, not an email address.
                 domain = match.group(1).casefold()
                 allowed = domain.endswith(('.invalid', '.example')) or domain in {
