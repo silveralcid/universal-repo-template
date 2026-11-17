@@ -6,6 +6,8 @@
 
 The requested behavior exists; it is wired to the real application/workflow entrypoint; success and important failure paths are handled; relevant tests or manual observations support the claim; changed contracts and owning docs match; no unapproved external side effects occurred. A useful vertical slice must be runnable by the human from documented commands.
 
+For defect fixes, reproduce the failure when feasible, address the root cause rather than masking symptoms, and verify recovery with focused regression coverage proportionate to risk. For significant new components, assess viable existing and public solutions before choosing custom code. Keep improvements within accepted scope; do not use self-improvement as a pretext for neighboring refactors.
+
 Distinguish **implemented**, **integrated**, **locally verified**, **human accepted**, **CI verified**, **released** and **deployed**. These are separate claims. A callable module without UI/job/entrypoint integration is not a delivered user feature. A placeholder, stub, mocked integration or skipped branch is not real connectivity.
 
 ## Required handoff
