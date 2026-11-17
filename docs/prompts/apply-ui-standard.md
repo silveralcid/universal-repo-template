@@ -1,6 +1,6 @@
 # Prompt — apply UI/UX standards
 
-For a task that changes a user-facing interface, first follow \`AGENTS.md\`, the existing project stack, and the relevant owning docs. Use the focused [UX workflow](../design/ux-sop.md) and only the relevant [appearance](../design/ui-standard.md), [behavior](../design/ux-standard.md), [data](../design/data-display.md), or [agent surface](../design/agent-surfaces.md) guidance.
+For a task that changes a user-facing interface, first follow `AGENTS.md`, the existing project stack, and the relevant owning docs. Use the focused [UX workflow](../design/ux-sop.md) and only the relevant [appearance](../design/ui-standard.md), [behavior](../design/ux-standard.md), [data](../design/data-display.md), or [agent surface](../design/agent-surfaces.md) guidance.
 
 **Outcome:** [GOAL]
 **Existing stack, constraints, and deviations:** [CONSTRAINTS]
