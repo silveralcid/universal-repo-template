@@ -12,6 +12,17 @@ Do not read the full README, all research, plans, handoffs or skills at every se
 
 Explicit owner decisions and owning specs describe intended behavior. Code, schemas, tests and observations describe actual implementation. Reconcile conflicts; neither a stale prompt nor a failing test silently changes approved intent. Research, validated findings, experiments and evidence are not product approval. Accepted decisions must be recorded in one owner. Preserve source, status, identifiers and working links when moving documentation. See [documentation](docs/agents/documentation.md).
 
+## Core build philosophies
+
+Apply proportionally to the task; these expectations do not authorize unrelated work or external side effects.
+
+1. **Self-repair:** Reproduce failures, find root causes, make the smallest safe fix, add regression coverage when useful, and stop unproductive retry loops. Never hide failures.
+2. **Self-document:** Keep existing canonical docs, contracts, and runbooks synchronized with meaningful changes. Record decisions and durable lessons, not routine narration.
+3. **Self-improve:** Use observed failures, tests, and feedback for small, evidence-driven improvements. Defer speculative refactors and larger scope changes.
+4. **Scalable, modular, DRY:** Reuse existing components, give behaviors clear owners, and keep boundaries simple. Add abstractions or capacity only for demonstrated needs.
+5. **DO NOT OVERENGINEER:** Deliver the simplest maintainable, verified end-to-end solution. Avoid speculative layers, services, tooling, agents, and documentation.
+6. **Research first; reuse before reinventing:** Before significant new functionality, inspect the project and proven public solutions, including official docs, libraries, open-source repos, and APIs. Prefer **ADOPT > ADAPT > BUILD**. Assess licensing, security, maintenance, fit, and total integration cost; preserve required notices and provenance. Keep research proportional so it never replaces delivery. See [startup](docs/agents/startup.md).
+
 ## Authorization and scope
 
 Implementation authorizes the necessary scoped local edits, verification and project-local setup; inspection/research/review is read-only unless saving is requested. Local setup does not authorize global installs, billable services, external data mutation, production access, deployment, destructive cleanup or merging. Follow [delivery](docs/agents/delivery.md). Preserve unrelated work; use the approved base and an isolated branch/worktree. No force-push, shared-branch edits or another lane's history rewrites without explicit authorization.

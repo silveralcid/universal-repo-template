@@ -7,6 +7,7 @@ One **canonical owner per topic**. This is a pointer table, not a duplicate spec
 | Project purpose, scope, audience, success criteria | [Project brief](project/BRIEF.md) |
 | Architectural boundaries and interface owners | [Architecture overview](architecture/OVERVIEW.md) |
 | Shared Codex and Claude operating rules | [AGENTS.md](../AGENTS.md) |
+| Core build philosophies and reuse-first default | [AGENTS.md](../AGENTS.md#core-build-philosophies) |
 | Codex-specific native configuration | [Codex setup](../.codex/README.md) |
 | Claude Code-specific native configuration | [Claude setup](../.claude/README.md) |
 | Reusable cross-provider agent workflows | [Skills index](../.agents/README.md) |

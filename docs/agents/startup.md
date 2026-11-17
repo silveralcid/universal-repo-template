@@ -14,6 +14,12 @@ Fill the smallest relevant portion of [the project brief](../project/BRIEF.md): 
 
 A blank project with a clear outcome authorizes a reasonable stack choice under the requested implementation. Explain that choice briefly and proceed. Choose local/mock boundaries for missing optional external systems only when they still satisfy the first-slice acceptance; label them and never pretend they are connected.
 
+## Research and reuse gate
+
+Before a substantial component, integration, dependency, or architecture decision, inventory the project's existing code, dependencies and framework capabilities. Then investigate relevant official documentation, maintained libraries, open-source repositories, public reference implementations, standards and APIs. Prefer **adopt > adapt > build**. Compare credible candidates for fit, maintenance, security, compatibility, license, attribution obligations and total integration cost. A public repository is not automatically licensed for copying; preserve required notices and source provenance when reuse is permitted.
+
+Make this a **proportional, bounded check**: a tiny fix needs a quick local reuse check, while a consequential dependency deserves targeted external research. Stop once a well-supported fit is found. Record the chosen source/version and short rationale for meaningful decisions in the existing owner or ADR, not a new research report by default. Do not add a large dependency to avoid a small helper, or implement speculative adapters to keep every option open. If external research is unavailable, disclose the limitation rather than claiming it happened.
+
 ## Start building, not just planning
 
 Use an isolated task branch when available. Without Git, report the missing version control and produce usable local files; bootstrap may initialize Git when authorized. No remote account is needed for local progress. New project dependencies may be installed locally after checking their purpose and install scripts; no global installs or new cloud resources by default.
