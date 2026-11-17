@@ -14,5 +14,6 @@ Use `python tools/repo.py prompt list` or `python tools/repo.py prompt show <nam
 | [Integration](integration.md) | Coordinate branches, ownership and dependency-aware merge preparation |
 | [Research](research.md) | Research of possibly unrelated or tangential value |
 | [Continuation](continuation.md) | Resume from prior branch, plan and evidence without restarting everything |
+| [Apply UI/UX standard](apply-ui-standard.md) | UI-facing changes; task-specific design, accessibility, data and background-state guidance |
 
 Prompts can be used in either provider. Do not set a model tier or permission in the prompt and assume the host enforces it: native models, client permissions and pricing live outside this repository. The [operating-cost policy](../agents/operating-cost.md) is guidance, not a billing or safety guarantee.

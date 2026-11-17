@@ -31,7 +31,7 @@ Choose sensible reversible details and continue. Ask only when missing informati
 
 ## Quality and honest results
 
-Prefer existing components and one owner per fact. Implement the smallest coherent, maintainable solution, including integration at its actual entrypoint. Follow [definition of done](docs/agents/definition-of-done.md) and [verification](docs/engineering/VERIFICATION.md). Scope tests during iteration; run applicable integration checks before claiming completion. Distinguish PASS, FAIL, NOT RUN, NOT CONFIGURED, BLOCKED and INCONCLUSIVE. Never claim hosted CI, runtime verification or human QA from template checks.
+Reuse components; keep one owner per fact. Deliver the smallest integrated solution. For UI tasks, use [design workflow](docs/prompts/apply-ui-standard.md). Follow [definition of done](docs/agents/definition-of-done.md) and [verification](docs/engineering/VERIFICATION.md). Run targeted and integration checks before claiming completion. Distinguish PASS, FAIL, NOT RUN, NOT CONFIGURED, BLOCKED and INCONCLUSIVE. Never claim hosted CI, runtime verification or human QA from template checks.
 
 ## Context, coordination and trust
 

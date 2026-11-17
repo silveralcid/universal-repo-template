@@ -30,6 +30,12 @@ One **canonical owner per topic**. This is a pointer table, not a duplicate spec
 | Machine context routes | [Context router](context/README.md) |
 | Approved domain-specific requirements | [Project area specifications](areas/README.md) |
 | Reusable task prompt library | [Task prompt index](prompts/README.md) |
+| UI appearance and optional theme | [UI standard](design/ui-standard.md) |
+| UX interaction patterns | [UX standard](design/ux-standard.md) |
+| Numbers, dates, and data presentation | [Data display](design/data-display.md) |
+| Background runs and agent UX | [Agent surfaces](design/agent-surfaces.md) |
+| UI implementation and review workflow | [UX SOP](design/ux-sop.md) |
+| Optional Markdown presentation guidance | [Markdown guidelines](design/markdown-standard.md) |
 
 ## Add an owner
 
