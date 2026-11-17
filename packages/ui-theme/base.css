@@ -1,0 +1,93 @@
+/* Optional unclassed HTML baseline. Do not import into a Mantine application.
+ * Load tokens.css first. Scope this file to simple standalone HTML pages.
+ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--leading-normal);
+}
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.app > .grow { flex: 1 1 auto; min-height: 0; }
+h1, h2, h3 {
+  margin: 0;
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+}
+h1 { font-size: var(--text-title); }
+h2 { font-size: var(--text-subtitle); }
+h3 { font-size: var(--text-body); }
+p { margin: 0 0 var(--space-3); }
+small, .muted { color: var(--color-text-muted); }
+code, pre, .mono { font-family: var(--font-mono); }
+.num, [data-numeric] { font-variant-numeric: tabular-nums; }
+a { color: var(--color-primary); }
+button, .btn {
+  font: inherit;
+  font-weight: var(--weight-medium);
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  cursor: pointer;
+}
+button.secondary { background: var(--color-primary-container); color: var(--color-on-primary-container); }
+button.ghost { background: transparent; color: var(--color-text); border: 1px solid var(--color-outline); }
+:is(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+input, select, textarea {
+  font: inherit;
+  min-height: var(--control-height);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-outline);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+label { display: inline-block; margin-bottom: var(--space-1); color: var(--color-text-muted); }
+.card {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+.tile { background: var(--color-surface-container); border-radius: var(--radius-md); padding: var(--space-3); }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th {
+  background: var(--color-surface-container);
+  text-align: left;
+  font-weight: var(--weight-semibold);
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+th, td { padding: var(--space-2) var(--space-4); }
+td { border-bottom: 1px solid var(--color-divider); }
+td[data-numeric] { text-align: right; }
+.pill { display: inline-block; padding: var(--space-1) var(--space-2); border-radius: var(--radius-full); }
+.pill.success { background: var(--color-success-container); color: var(--color-on-success-container); }
+.pill.warning { background: var(--color-warning-container); color: var(--color-on-warning-container); }
+.pill.error { background: var(--color-error-container); color: var(--color-on-error-container); }
+.pill.info { background: var(--color-info-container); color: var(--color-on-info-container); }
+.skeleton {
+  background: var(--color-surface-container-high);
+  border-radius: var(--radius-xs);
+  min-height: 1em;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse { 50% { opacity: .5; } }
+.empty { padding: var(--space-10) var(--space-4); text-align: center; color: var(--color-text-muted); }
+.field-error { color: var(--color-error); }
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  button, .btn, input, select { min-height: var(--touch-target); }
+  /* Keep semantic table headers available; use horizontal scrolling by default. */
+  .table-wrap { overflow-x: auto; }
+}

@@ -1,0 +1,154 @@
+/* Optional UI token profile, based on the uploaded UI/UX standards bundle.
+ * Static reviewed values, not a verified automatic Material 3 generation.
+ * Import tokens.css for the palette; base.css is for standalone HTML only.
+ */
+:root {
+  --color-primary: #166d68;
+  --color-on-primary: #fff;
+  --color-primary-container: #9ff2eb;
+  --color-on-primary-container: #00201e;
+  --color-surface: #f5fbf9;
+  --color-surface-raised: #fff;
+  --color-surface-container: #e9efed;
+  --color-surface-container-high: #e3e9e7;
+  --color-text: #171d1c;
+  --color-text-muted: #3f4947;
+  --color-outline: #6f7978;
+  --color-outline-variant: #bec9c7;
+  --color-divider: #dce4e2;
+  --color-success: #2e6b4f;
+  --color-success-container: #b7f0cf;
+  --color-on-success-container: #09341f;
+  --color-warning: #7a5900;
+  --color-warning-container: #ffdf9a;
+  --color-on-warning-container: #3f2e00;
+  --color-error: #b3261e;
+  --color-error-container: #f9dedc;
+  --color-on-error-container: #410e0b;
+  --color-info: #15548b;
+  --color-info-container: #d3e4ff;
+  --color-on-info-container: #001c38;
+  --chart-1: #0072b2;
+  --chart-2: #e69f00;
+  --chart-3: #009e73;
+  --chart-4: #cc79a7;
+  --chart-5: #56b4e9;
+  --chart-6: #d55e00;
+  --chart-7: #f0e442;
+  --chart-8: #666666;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-full: 999px;
+  --font-sans: "Roboto Flex", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --text-display: 32px;
+  --text-title: 22px;
+  --text-subtitle: 16px;
+  --text-body: 13px;
+  --text-label: 12px;
+  --text-overline: 10px;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --motion-micro: 120ms;
+  --motion-standard: 180ms;
+  --motion-overlay: 240ms;
+  --motion-ease: cubic-bezier(0.2, 0, 0, 1);
+  --touch-target: 44px;
+  --control-height: 40px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-mantine-color-scheme="light"]) {
+    --color-primary: #83d5cf;
+    --color-on-primary: #003734;
+    --color-primary-container: #00504c;
+    --color-on-primary-container: #9ff2eb;
+    --color-surface: #0e1514;
+    --color-surface-raised: #141b1a;
+    --color-surface-container: #1a2120;
+    --color-surface-container-high: #252b2a;
+    --color-text: #dde4e2;
+    --color-text-muted: #bec9c7;
+    --color-outline: #889392;
+    --color-outline-variant: #3f4947;
+    --color-divider: #2b3433;
+    --color-success: #8bd8ac;
+    --color-success-container: #1e4634;
+    --color-on-success-container: #8bd8ac;
+    --color-warning: #f5c563;
+    --color-warning-container: #4a3a10;
+    --color-on-warning-container: #f5c563;
+    --color-error: #f2b8b5;
+    --color-error-container: #5b1a17;
+    --color-on-error-container: #f2b8b5;
+    --color-info: #9cc9ff;
+    --color-info-container: #1d3450;
+    --color-on-info-container: #9cc9ff;
+    --chart-1: #56b4e9;
+    --chart-2: #e69f00;
+    --chart-3: #4fc3a1;
+    --chart-4: #e8a0c4;
+    --chart-5: #8ccdf2;
+    --chart-6: #ff8c42;
+    --chart-7: #f0e442;
+    --chart-8: #a6a6a6;
+  }
+}
+:root[data-theme="dark"],
+:root[data-mantine-color-scheme="dark"] {
+  --color-primary: #83d5cf;
+  --color-on-primary: #003734;
+  --color-primary-container: #00504c;
+  --color-on-primary-container: #9ff2eb;
+  --color-surface: #0e1514;
+  --color-surface-raised: #141b1a;
+  --color-surface-container: #1a2120;
+  --color-surface-container-high: #252b2a;
+  --color-text: #dde4e2;
+  --color-text-muted: #bec9c7;
+  --color-outline: #889392;
+  --color-outline-variant: #3f4947;
+  --color-divider: #2b3433;
+  --color-success: #8bd8ac;
+  --color-success-container: #1e4634;
+  --color-on-success-container: #8bd8ac;
+  --color-warning: #f5c563;
+  --color-warning-container: #4a3a10;
+  --color-on-warning-container: #f5c563;
+  --color-error: #f2b8b5;
+  --color-error-container: #5b1a17;
+  --color-on-error-container: #f2b8b5;
+  --color-info: #9cc9ff;
+  --color-info-container: #1d3450;
+  --color-on-info-container: #9cc9ff;
+  --chart-1: #56b4e9;
+  --chart-2: #e69f00;
+  --chart-3: #4fc3a1;
+  --chart-4: #e8a0c4;
+  --chart-5: #8ccdf2;
+  --chart-6: #ff8c42;
+  --chart-7: #f0e442;
+  --chart-8: #a6a6a6;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
