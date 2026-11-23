@@ -12,6 +12,7 @@ REQUIRED = ['README.md', 'START-HERE.md', 'AGENTS.md', 'CLAUDE.md', 'PLANS.md',
             'docs/context/routes.json', 'docs/project/BRIEF.md',
             'docs/agents/startup.md', 'docs/agents/documentation.md',
             'docs/engineering/VERIFICATION.md', 'docs/agents/definition-of-done.md',
+            'docs/engineering/TESTING.md', 'docs/engineering/CODE-QUALITY.md',
             'tools/tests/test_repo_tool.py', '.repo/context-budgets.json',
             'docs/prompts/README.md', 'docs/areas/README.md']
 CORE_SKILLS = ('project-bootstrap', 'implement-task', 'review-change', 'research-scout',

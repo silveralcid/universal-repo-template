@@ -221,9 +221,13 @@ def main():
             else:
                 receipt, code, path = execute_verification(ROOT, plan)
                 # Do not print raw command output: it may contain private data.
-                emit(dict(overall=receipt['overall'], checks=[{'name': r['name'], 'status': r['status']}
-                                                              for r in receipt['checks']],
-                          local_receipt=path.relative_to(ROOT).as_posix()))
+                summary = {key: receipt[key] for key in ('overall', 'selection_reason', 'requested_paths',
+                           'unmapped_paths', 'paths_without_checks', 'coverage_claim')}
+                if 'reason' in receipt:
+                    summary['reason'] = receipt['reason']
+                summary.update(checks=[{'name': r['name'], 'status': r['status']} for r in receipt['checks']],
+                               local_receipt=path.relative_to(ROOT).as_posix())
+                emit(summary)
                 return code
         elif args.action == 'adopt':
             plan = adoption_plan(ROOT, Path(args.into))

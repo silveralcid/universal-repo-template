@@ -44,6 +44,7 @@ The main navigation points are:
 | Documentation navigation | [Documentation index](docs/INDEX.md) |
 | Existing-project adoption | [Adoption guide](docs/agents/adoption-and-upgrades.md) |
 | Task prompt library | [Prompts](docs/prompts/README.md) |
+| Engineering and test design | [Code quality](docs/engineering/CODE-QUALITY.md) and [testing SOP](docs/engineering/TESTING.md) |
 | Verification and delivery | [Verification](docs/engineering/VERIFICATION.md) and [delivery](docs/agents/delivery.md) |
 | Agent configuration | [Provider adapters](docs/agents/provider-matrix.md) |
 | Security and trust | [Security](docs/engineering/SECURITY.md) and [trust boundaries](docs/agents/trust-boundaries.md) |

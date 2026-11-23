@@ -457,6 +457,104 @@ class FixtureTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             workflow.verification_plan(self.root)
 
+    def test_setup_only_registry_cannot_report_success_without_checks(self):
+        path = self.root / '.repo/project.json'
+        cfg = core.load_json(path)
+        cfg['commands'] = {'setup': None}
+        core.dump_json(path, cfg)
+        result = self.cli('verify', 'run', '--execute')
+        self.assertEqual(result.returncode, 2, result.stdout)
+        report = json.loads(result.stdout)
+        self.assertEqual(report['overall'], 'INCOMPLETE')
+        receipt = core.load_json(self.root / report['local_receipt'])
+        self.assertEqual(receipt['checks'], [])
+        self.assertIn('No verification checks selected', receipt['reason'])
+
+    def test_area_without_checks_cannot_hide_missing_integration(self):
+        self.command(['{python}', '-c', 'assert 2 + 2 == 4'])
+        cfg = core.load_json(self.root / '.repo/project.json')
+        cfg['commands'] = {'test': cfg['commands']['test'], 'integration': None}
+        core.dump_json(self.root / '.repo/project.json', cfg)
+        self.write('docs/agents/areas/demo.md', '# Demo\n')
+        for unchecked_path in ('src/adapter/use.py', 'src/core/use.py'):
+            with self.subTest(unchecked_path=unchecked_path):
+                core.dump_json(self.root / '.repo/areas.json', {'schema_version': 1, 'areas': [
+                    {'id': 'core', 'guide': 'docs/agents/areas/demo.md',
+                     'paths': ['src/core/*'], 'checks': ['test']},
+                    {'id': 'adapter', 'guide': 'docs/agents/areas/demo.md',
+                     'paths': [unchecked_path], 'checks': []}]})
+                paths = list(dict.fromkeys(['src/core/use.py', unchecked_path]))
+                args = [arg for path in paths for arg in ('--path', path)]
+                result = self.cli('verify', 'run', *args, '--execute')
+                self.assertEqual(result.returncode, 2, result.stdout)
+                report = json.loads(result.stdout)
+                self.assertEqual(report['overall'], 'INCOMPLETE')
+                self.assertEqual(report['paths_without_checks'], [unchecked_path])
+                receipt = core.load_json(self.root / report['local_receipt'])
+                self.assertEqual(receipt['paths_without_checks'], [unchecked_path])
+                statuses = {r['name']: r['status'] for r in receipt['checks']}
+                self.assertEqual(statuses['test'], 'PASS')
+                self.assertEqual(statuses['integration'], 'NOT_CONFIGURED')
+
+    def test_explicit_selection_receipt_preserves_scope_and_real_assertions(self):
+        self.write('app/check_total.py', 'from decimal import Decimal\n'
+                   'assert sum([Decimal("1.10"), Decimal("2.20")]) == Decimal("3.30")\n')
+        self.command(['{python}', 'app/check_total.py'])
+        result = self.cli('verify', 'run', '--name', 'test',
+                          '--path', 'unmapped/other.py', '--execute')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertIn('explicit command selection', report['selection_reason'])
+        self.assertIn('process exits only', report['coverage_claim'])
+        receipt = core.load_json(self.root / report['local_receipt'])
+        self.assertEqual(receipt['requested_paths'], ['unmapped/other.py'])
+        self.assertEqual([r['name'] for r in receipt['checks']], ['test'])
+        self.assertEqual(receipt['checks'][0]['exit_code'], 0)
+        self.assertEqual(receipt['coverage_claim'], report['coverage_claim'])
+
+    def test_failed_boundary_does_not_hide_behind_a_successful_check(self):
+        # Real local SQLite boundary, with a missing schema then a valid one.
+        # No external service or mock stands in for connectivity.
+        self.write('app/check_store.py', 'import sqlite3\n'
+                   'with sqlite3.connect("store.sqlite") as db:\n'
+                   '    assert db.execute("SELECT name FROM items").fetchall() == [("sample",)]\n')
+        self.command(['{python}', '-c', 'assert "sample".upper() == "SAMPLE"'])
+        self.command(['{python}', 'app/check_store.py'], name='integration')
+        result = self.cli('verify', 'run', '--name', 'test', '--name', 'integration', '--execute')
+        self.assertEqual(result.returncode, 1, result.stdout)
+        report = json.loads(result.stdout)
+        self.assertEqual(report['overall'], 'FAIL_OR_BLOCKED')
+        self.assertEqual([r['status'] for r in report['checks']], ['PASS', 'FAIL'])
+        receipt = core.load_json(self.root / report['local_receipt'])
+        log = core.text(self.root / receipt['checks'][1]['log_path'])
+        self.assertIn('no such table: items', log)
+        import sqlite3
+        with sqlite3.connect(self.root / 'store.sqlite') as db:
+            db.execute('CREATE TABLE items (name TEXT NOT NULL)')
+            db.execute('INSERT INTO items VALUES (?)', ('sample',))
+        recovered = self.cli('verify', 'run', '--name', 'test', '--name', 'integration', '--execute')
+        self.assertEqual(recovered.returncode, 0, recovered.stdout)
+        self.assertEqual(json.loads(recovered.stdout)['overall'], 'PASS')
+
+    def test_stdout_success_claim_cannot_override_nonzero_exit(self):
+        self.command(['{python}', '-c', 'print("PASS: everything verified"); raise SystemExit(9)'])
+        result = self.cli('verify', 'run', '--name', 'test', '--execute')
+        self.assertEqual(result.returncode, 1, result.stdout)
+        report = json.loads(result.stdout)
+        self.assertEqual(report['overall'], 'FAIL_OR_BLOCKED')
+        receipt = core.load_json(self.root / report['local_receipt'])
+        self.assertEqual(receipt['checks'][0]['exit_code'], 9)
+        self.assertEqual(receipt['checks'][0]['status'], 'FAIL')
+        self.assertIn('PASS: everything verified', core.text(self.root / receipt['checks'][0]['log_path']))
+
+    def test_unknown_check_never_executes_a_registered_command(self):
+        self.command(['{python}', '-c', 'from pathlib import Path; Path("SENTINEL").touch()'])
+        result = self.cli('verify', 'run', '--name', 'test', '--name', 'typo', '--execute')
+        self.assertEqual(result.returncode, 2, result.stdout)
+        self.assertIn('Unknown command: typo', result.stderr)
+        self.assertFalse((self.root / 'SENTINEL').exists())
+        self.assertFalse((self.root / '.repo-local/runs').exists())
+
     def test_branch_report_never_claims_remote_freshness(self):
         report=core.state(self.root)
         self.assertEqual(report['remote_freshness'],'NOT_VERIFIED')
@@ -571,6 +669,15 @@ class FixtureTests(unittest.TestCase):
         (self.root / 'tools/tests/test_repo_tool.py').unlink()
         self.assertTrue(any('tools/tests/test_repo_tool.py' in e
                             for e in validation.doc_errors(self.root)))
+
+    def test_missing_engineering_owner_cannot_pass_static_check(self):
+        for name in ('TESTING.md', 'CODE-QUALITY.md'):
+            with self.subTest(owner=name):
+                path = self.root / 'docs/engineering' / name
+                path.unlink()
+                self.assertIn(f'Missing required file: docs/engineering/{name}',
+                              validation.doc_errors(self.root))
+                self.write(f'docs/engineering/{name}', '# Synthetic policy fixture\n')
 
     def test_invalid_project_json_shape_reports_clear_error(self):
         self.write('.repo/project.json', '[]')

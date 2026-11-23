@@ -217,19 +217,28 @@
     "implementation": {
       "required": [
         {
+          "path": "docs/engineering/CODE-QUALITY.md",
+          "reason": "Maintainable implementation standards"
+        },
+        {
+          "path": "docs/engineering/TESTING.md",
+          "reason": "Risk-based behavior checks and trustworthy expectations"
+        }
+      ],
+      "optional": [
+        {
           "path": "docs/agents/delivery.md",
-          "reason": "Scope and delivery permissions"
+          "reason": "When planning branch delivery or checking authorization"
         },
         {
           "path": "docs/agents/definition-of-done.md",
-          "reason": "Observable completion"
+          "reason": "When assessing completion and handoff claims"
         },
         {
           "path": "docs/engineering/VERIFICATION.md",
-          "reason": "Applicable checks"
+          "reason": "When registering checks or executing the verification workflow"
         }
       ],
-      "optional": [],
       "budget_tokens": 5000
     },
     "incident": {
@@ -348,11 +357,39 @@
           "reason": "Review against real completion claims"
         },
         {
-          "path": "docs/engineering/VERIFICATION.md",
-          "reason": "Evidence standards"
+          "path": "docs/engineering/TESTING.md",
+          "reason": "Check assertion quality, integration evidence and gaps"
         }
       ],
-      "optional": [],
+      "optional": [
+        {
+          "path": "docs/engineering/CODE-QUALITY.md",
+          "reason": "When reviewing implementation structure and failure handling"
+        },
+        {
+          "path": "docs/engineering/VERIFICATION.md",
+          "reason": "When checking command registration and execution evidence"
+        }
+      ],
+      "budget_tokens": 5000
+    },
+    "testing": {
+      "required": [
+        {
+          "path": "docs/engineering/TESTING.md",
+          "reason": "Canonical test design and AI application evaluation SOP"
+        },
+        {
+          "path": "docs/engineering/VERIFICATION.md",
+          "reason": "Register and run actual project checks"
+        }
+      ],
+      "optional": [
+        {
+          "path": "docs/agents/agent-evaluation.md",
+          "reason": "Only when changing the coding-agent workflow itself"
+        }
+      ],
       "budget_tokens": 5000
     }
   }
