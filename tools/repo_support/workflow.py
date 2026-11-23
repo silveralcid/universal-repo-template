@@ -22,6 +22,9 @@ def verification_plan(root: Path, names=None, changed=None) -> dict:
     selected = list(names or [])
     reason = 'explicit command selection' if selected else 'all configured check slots; setup excluded'
     unknown = []
+    unchecked = []
+    if selected and changed:
+        reason += '; --path does not expand explicit names'
     if changed and not selected:
         areas = load_json(safe_path(root, '.repo/areas.json'))['areas']
         for path in changed:
@@ -29,10 +32,13 @@ def verification_plan(root: Path, names=None, changed=None) -> dict:
             matches = [area for area in areas if any(fnmatch.fnmatchcase(path, glob) for glob in area['paths'])]
             if not matches:
                 unknown.append(path)
+            if any(not area['checks'] for area in matches):
+                unchecked.append(path)
             for area in matches:
                 selected.extend(area['checks'])
-        reason = 'registered path areas (fnmatch; * can cross /)' if not unknown else 'unmapped paths: conservative all-check fallback'
-    if not selected or unknown:
+        reason = ('unmapped paths or areas without checks: conservative all-check fallback'
+                  if unknown or unchecked else 'registered path areas (fnmatch; * can cross /)')
+    if not selected or unknown or unchecked:
         selected = [name for name in commands if name != 'setup']
     selected = list(dict.fromkeys(selected))
     for name in selected:
@@ -42,7 +48,8 @@ def verification_plan(root: Path, names=None, changed=None) -> dict:
             raise ValueError('Setup may install dependencies; inspect and run it separately, not as verification')
     checks = [dict(name=name, status='PLANNED' if commands[name] else 'NOT_CONFIGURED',
                    command=commands[name]) for name in selected]
-    return dict(schema_version=1, selection_reason=reason, unmapped_paths=unknown, checks=checks,
+    return dict(schema_version=1, selection_reason=reason, requested_paths=list(changed or []),
+                unmapped_paths=unknown, paths_without_checks=unchecked, checks=checks,
                 coverage_claim='Selection only. Registered mappings require human review; not proof of complete coverage.')
 
 
@@ -52,8 +59,13 @@ def execute_verification(root: Path, plan: dict) -> tuple[dict, int, Path]:
     output = safe_path(root, '.repo-local/runs/' + run_id)
     output.mkdir(parents=True, exist_ok=False)
     receipt = dict(schema_version=1, started_at=now(), source_before=state(root), checks=[],
+                   selection_reason=plan['selection_reason'], requested_paths=plan.get('requested_paths', []),
+                   unmapped_paths=plan['unmapped_paths'], paths_without_checks=plan.get('paths_without_checks', []),
+                   coverage_claim='Selected process exits only. PASS does not establish test adequacy, absence of skipped tests, complete application coverage, or real integration.',
                    limitation='No security sandbox; argv avoids implicit shell parsing, not malicious executables. Raw logs may contain secrets; never publish unreviewed.')
-    failed, incomplete = False, False
+    failed, incomplete = False, not plan['checks']
+    if incomplete:
+        receipt['reason'] = 'No verification checks selected; register actual project checks'
     for number, planned in enumerate(plan['checks'], 1):
         record = dict(planned)
         command = record['command']

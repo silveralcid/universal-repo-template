@@ -17,6 +17,8 @@ Project schema 2 uses an object keyed by command name. Each value is `null` or t
 
 This is an example, not an installed test framework. `{python}` resolves to the Python running the helper. Every other argument is literal. Set Node, Rust, engine, Java or other executables as appropriate. Do not put credentials in argv or configuration. No command interpolation, environment expansion, pipe, automatic shell wrapper or dependency installation is provided. A script executable can still do anything its account permits: **this is not a sandbox**.
 
+Once a stack exists, register its real application commands and inspect the scripts they invoke. Keep a required but unavailable check as `null`; remove an inapplicable slot only with an explanation in the owning project/area guide. Custom names such as `integration` or `ai_eval` use the same shape. Do not register template health, an echo, or a placeholder as the application's test command. See [test design](../engineering/TESTING.md) and [stack examples](../engineering/VERIFICATION.md).
+
 Inspect package hooks and scripts before execution. On Windows, a `.cmd` executable can have OS-specific shell behavior; prefer an explicit reviewed executable invocation. Pipelines belong in a reviewed project script, not a string passed to the helper. Configure `cwd` using repository-relative forward-slash paths. Symlink and parent traversal paths are rejected. The caller's environment is inherited; use a restricted environment/account for untrusted work.
 
 `setup` documents install/bootstrap and is excluded from verification execution. Run it separately after inspection and authorization. No deployment, CRM write, email send, production migration or other external mutation belongs in the verification registry.
@@ -29,9 +31,11 @@ python tools/repo.py verify plan --name test
 python tools/repo.py verify run --name test --execute
 ```
 
-Without `--execute`, `run` prints the plan, runs nothing and exits 2. Unset commands stay NOT_CONFIGURED. A failing/blocked check returns 1; incomplete coverage with no failed check returns 2; only all selected configured checks passing returns 0. A successful selective run makes no claim about unselected checks.
+Without `--execute`, `run` prints the plan, runs nothing and exits 2. Unset commands stay NOT_CONFIGURED. A failing/blocked check returns 1; missing configuration or an empty non-setup selection returns 2; only a nonempty selection of configured checks all exiting zero returns 0. A successful selective run makes no claim about unselected checks. `--name` takes precedence over `--path` when both are supplied; the selection reason records this.
 
-Receipts and raw logs go to ignored `.repo-local/runs/<UTC-run-id>/`. The console prints only statuses and the receipt path, not raw output. Receipts record source before/after, exact argv, durations and log SHA-256. A dirty checkout is explicitly marked; the working-tree status hash identifies the status listing, **not all uncommitted contents**. For reproducible high-stakes evidence, commit or capture the actual changed files/patch checksum separately.
+Receipts and raw logs go to ignored `.repo-local/runs/<UTC-run-id>/`. The console prints statuses, selection scope and the receipt path, not raw output. Receipts record source before/after, exact argv, durations, log SHA-256, selection reason and path gaps. A dirty checkout is explicitly marked; the working-tree status hash identifies the status listing, **not all uncommitted contents**. For reproducible high-stakes evidence, commit or capture the actual changed files/patch checksum separately.
+
+PASS here means the selected processes exited zero. The runner cannot infer whether tests were discovered, skipped, vacuous, realistic or connected to a real service. Inspect the native runner's summary and assertions under the [testing SOP](../engineering/TESTING.md); a misleading success line cannot override a nonzero exit, and a zero exit cannot establish semantic correctness.
 
 Commands are timeout-bounded. On POSIX the runner terminates the process group at timeout; on Windows it can guarantee termination only of the direct child. Inspect descendants and use a disposable workspace for potentially spawning tools. The runner does not cap log size or network traffic; choose bounded tests, storage limits and a real sandbox when needed.
 
@@ -51,7 +55,7 @@ Commands are timeout-bounded. On POSIX the runner terminates the process group a
 }
 ```
 
-Create the guide and actual commands before registering. Patterns use Python `fnmatchcase`: case-sensitive and `*` can cross `/`; they are not Gitignore semantics. `verify plan --path packages/workflow-core/src/jobs.ts` selects mapped checks. Unknown paths or no applicable selection fall back to all non-setup slots, not to zero tests. Mappings cannot prove dependency coverage; expand manually for shared contracts, root config, schemas and integration.
+Create the guide and actual commands before registering. Patterns use Python `fnmatchcase`: case-sensitive and `*` can cross `/`; they are not Gitignore semantics. `verify plan --path packages/workflow-core/src/jobs.ts` selects mapped checks. Unknown paths, any matching area with no checks, or no applicable selection fall back to all non-setup slots. The plan, console and receipt preserve `requested_paths`, `unmapped_paths` and `paths_without_checks`. This includes mixed selections where another area has a passing check. Repair the mapping and review the gap even if the fallback commands pass. Mappings cannot prove dependency coverage; expand manually for shared contracts, root config, schemas and integration.
 
 The helper is optional. Running a native project command directly is legitimate; record the evidence accurately.
 

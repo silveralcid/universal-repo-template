@@ -27,4 +27,4 @@ Existing-red tests must be established from relevant baseline evidence, not gues
 
 ## Proportional quality
 
-For changed code consider boundary/error tests, lifecycle cleanup, idempotency when applicable, types/schema validation, data migration and rollback, performance at representative scale, accessibility/input paths for user-facing work, and privacy/rights. These are applicability checks, not a mandate to implement every architecture pattern in a new project.
+Use the [testing SOP](../engineering/TESTING.md) to choose evidence proportionate to the failure risk and [code-quality standards](../engineering/CODE-QUALITY.md) for implementation review. Explain why the checks establish the claimed behavior, their regression sensitivity, and what remains untested. Stop when the accepted behavior and applicable checks are satisfied; no test-count or coverage quota replaces that judgment.

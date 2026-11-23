@@ -6,6 +6,8 @@
 
 ## Evidence and verification
 
+Apply the [testing SOP](../docs/engineering/TESTING.md). Name the tested source/environment, acceptance behavior, independent expectation, and why the check would reject the relevant broken behavior. Distinguish template checks from application checks and real integrations from fixtures.
+
 | Check | Ran? | Result / reason if not run |
 |---|---|---|
 | Narrow tests | | |

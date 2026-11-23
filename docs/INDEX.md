@@ -20,7 +20,9 @@ One **canonical owner per topic**. This is a pointer table, not a duplicate spec
 | Task continuation record storage | [Handoff index](handoffs/README.md) |
 | Branches, PRs, approvals and delivery | [Delivery](agents/delivery.md) |
 | Continuing a paused task | [Handoffs](agents/handoff.md) |
-| Verification and evidence interpretation | [Verification](engineering/VERIFICATION.md) |
+| Risk-based test design, integration and AI application evaluations | [Testing SOP](engineering/TESTING.md) |
+| Maintainable implementation and proportional engineering standards | [Code quality](engineering/CODE-QUALITY.md) |
+| Verification execution and evidence interpretation | [Verification](engineering/VERIFICATION.md) |
 | Security, privacy, secrets and rights | [Security](engineering/SECURITY.md) |
 | Technical design decisions | [Architecture decision records](adr/README.md) |
 | Business/product design decisions | [Decision log](decisions/README.md) |

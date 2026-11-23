@@ -31,7 +31,7 @@ Choose sensible reversible details and continue. Ask only when missing informati
 
 ## Quality and honest results
 
-Reuse components; keep one owner per fact. Deliver the smallest integrated solution. For UI tasks, use [design workflow](docs/prompts/apply-ui-standard.md). Follow [definition of done](docs/agents/definition-of-done.md) and [verification](docs/engineering/VERIFICATION.md). Run targeted and integration checks before claiming completion. Distinguish PASS, FAIL, NOT RUN, NOT CONFIGURED, BLOCKED and INCONCLUSIVE. Never claim hosted CI, runtime verification or human QA from template checks.
+Follow [code quality](docs/engineering/CODE-QUALITY.md), [testing](docs/engineering/TESTING.md) and [definition of done](docs/agents/definition-of-done.md). Use [verification](docs/engineering/VERIFICATION.md) for execution and [design workflow](docs/prompts/apply-ui-standard.md) for UI work. Register and run real project checks; report exact evidence and missing checks. Template health is not application verification. Report local results, hosted CI and human acceptance separately.
 
 ## Context, coordination and trust
 
